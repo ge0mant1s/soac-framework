@@ -1,4 +1,5 @@
-version: '3.8'
+# SOaC Framework - Docker Compose Configuration
+# Version: 0.1.0
 
 services:
   # PostgreSQL Database
@@ -7,85 +8,87 @@ services:
     container_name: soac-postgres
     environment:
       POSTGRES_DB: soac
-      POSTGRES_USER: soac
-      POSTGRES_PASSWORD: soac_password_change_me
+      POSTGRES_USER: soac_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_in_production}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    networks:
-      - soac-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U soac"]
+      test: ["CMD-SHELL", "pg_isready -U soac_user"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - soac-network
 
   # Redis Cache
   redis:
     image: redis:7-alpine
     container_name: soac-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD:-change_me_in_production}
+    volumes:
+      - redis_data:/data
     ports:
       - "6379:6379"
-    networks:
-      - soac-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - soac-network
 
-  # SOaC API Backend
+  # SOaC API Server
   api:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
     container_name: soac-api
     environment:
-      - DATABASE_URL=postgresql://soac:soac_password_change_me@postgres:5432/soac
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=change_this_secret_key_in_production
-      - FLASK_ENV=production
+      - FLASK_ENV=${FLASK_ENV:-production}
+      - DATABASE_URL=postgresql://soac_user:${POSTGRES_PASSWORD:-change_me_in_production}@postgres:5432/soac
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-change_me_in_production}@redis:6379/0
+      - SECRET_KEY=${SECRET_KEY:-generate_a_secure_secret_key}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-generate_a_secure_jwt_key}
+    volumes:
+      - ./config:/app/config:ro
+      - ./core:/app/core:ro
+      - ./api:/app/api:ro
+      - ./ai_assistant:/app/ai_assistant:ro
+      - logs_data:/app/logs
     ports:
       - "5000:5000"
-    volumes:
-      - ./config:/app/config
-      - ./logs:/app/logs
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     networks:
       - soac-network
     restart: unless-stopped
 
-  # SOaC Web UI
-  web:
-    build:
-      context: ./web_ui
-      dockerfile: ../docker/Dockerfile.web
-    container_name: soac-web
-    ports:
-      - "3000:80"
-    depends_on:
-      - api
-    networks:
-      - soac-network
-    restart: unless-stopped
-
-  # SOaC Streaming Orchestrator
-  orchestrator:
+  # AI Assistant Service
+  ai-assistant:
     build:
       context: .
-      dockerfile: docker/Dockerfile.orchestrator
-    container_name: soac-orchestrator
+      dockerfile: docker/Dockerfile.ai
+    container_name: soac-ai-assistant
     environment:
-      - DATABASE_URL=postgresql://soac:soac_password_change_me@postgres:5432/soac
-      - REDIS_URL=redis://redis:6379/0
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - DATABASE_URL=postgresql://soac_user:${POSTGRES_PASSWORD:-change_me_in_production}@postgres:5432/soac
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-change_me_in_production}@redis:6379/0
     volumes:
-      - ./config:/app/config
-      - ./logs:/app/logs
+      - ./config:/app/config:ro
+      - ./ai_assistant:/app/ai_assistant:ro
+      - ./core:/app/core:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -94,10 +97,3 @@ services:
     networks:
       - soac-network
     restart: unless-stopped
-
-volumes:
-  postgres_data:
-
-networks:
-  soac-network:
-    driver: bridge
