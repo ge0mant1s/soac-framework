@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/badge/version-0.1.0-green)
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue)
 
-## 🚀 Overview
+## Overview
 
 **Security Operations as Code (SOaC)** is a comprehensive framework that transforms security operations into code-driven, automated, and scalable processes. SOaC unifies detection engineering, incident response, threat intelligence, and security orchestration into a single, cohesive platform.
 
@@ -19,7 +19,7 @@
 - 📈 **Threat Intelligence** - Integrated TI enrichment and correlation
 - 🐳 **Docker Ready** - Deploy in minutes with Docker Compose
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -33,8 +33,8 @@
 └─────────────────────────────────────────────────────────────┘
                               │
 ┌─────────────────────────────────────────────────────────────┐
-│                    AI Assistant Engine                       │
-│         (NLP + Context-Aware Security Intelligence)          │
+│                    AI Assistant Engine                      │
+│         (NLP + Context-Aware Security Intelligence)         │
 └─────────────────────────────────────────────────────────────┘
                               │
 ┌─────────────────────────────────────────────────────────────┐
@@ -49,7 +49,7 @@
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 🎯 Supported Platforms
+## Supported Platforms
 
 ### SIEM & Log Management
 - Splunk, Elastic, QRadar, LogRhythm, Sumo Logic, Azure Sentinel
@@ -69,7 +69,7 @@
 ### Threat Intelligence
 - MISP, ThreatConnect, Anomali, VirusTotal
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Docker & Docker Compose
@@ -117,7 +117,7 @@ cd web_ui
 npm start
 ```
 
-## 📚 Documentation
+## Documentation
 
 - [Architecture Overview](docs/architecture/overview.md)
 - [CQL Language Reference](docs/cql_reference.md)
@@ -126,7 +126,7 @@ npm start
 - [Operational Models](docs/operational_models/)
 - [Use Case Development](docs/use_case_development.md)
 
-## 🎓 Examples
+## Examples
 
 ### Example 1: Create a Detection Rule
 
@@ -170,7 +170,7 @@ incident = incident_mgr.create_incident(
 )
 ```
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
@@ -187,7 +187,7 @@ This project uses a dual-license model:
 
 See [LICENSE](LICENSE) for details.
 
-## 🛣️ Roadmap
+## Roadmap
 
 ### v0.2.0 (Q4 2025)
 - [ ] SOAR playbook automation
@@ -201,14 +201,14 @@ See [LICENSE](LICENSE) for details.
 - [ ] Custom dashboard builder
 - [ ] Threat hunting workbench
 
-## 💬 Community & Support
+## Community & Support
 
 - **Documentation**: [https://docs.soacframe.io](https://docs.soacframe.io)
 - **Community Forum**: [https://community.soacframe.io](https://community.soacframe.io)
 - **Discord**: [Join our Discord](https://discord.gg/JsDBq6fM)
 - **Email**: support@soacframe.io
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built with modern security operations best practices and inspired by:
 - MITRE ATT&CK Framework
@@ -216,7 +216,7 @@ Built with modern security operations best practices and inspired by:
 - OCSF (Open Cybersecurity Schema Framework)
 - Detection-as-Code principles
 
-## ⭐ Star History
+## Star History
 
 If you find SOaC useful, please consider giving us a star! ⭐
 
