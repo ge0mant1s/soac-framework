@@ -58,7 +58,7 @@ services:
       - ./ai_assistant:/app/ai_assistant:ro
       - logs_data:/app/logs
     ports:
-      - "5000:5000"
+      - "5001:5000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -97,14 +97,16 @@ services:
     networks:
       - soac-network
     restart: unless-stopped
+    profiles:
+      - optional
 
   # Nginx Reverse Proxy (Optional - for production)
   nginx:
     image: nginx:alpine
     container_name: soac-nginx
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "8443:443"
     volumes:
       - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./docker/ssl:/etc/nginx/ssl:ro
