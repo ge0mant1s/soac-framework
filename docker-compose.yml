@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: soac-postgres
+    environment:
+      POSTGRES_DB: soac
+      POSTGRES_USER: soac
+      POSTGRES_PASSWORD: soac_password_change_me
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - soac-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U soac"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: soac-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - soac-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # SOaC API Backend
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: soac-api
+    environment:
+      - DATABASE_URL=postgresql://soac:soac_password_change_me@postgres:5432/soac
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=change_this_secret_key_in_production
+      - FLASK_ENV=production
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - soac-network
+    restart: unless-stopped
+
+  # SOaC Web UI
+  web:
+    build:
+      context: ./web_ui
+      dockerfile: ../docker/Dockerfile.web
+    container_name: soac-web
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - soac-network
+    restart: unless-stopped
+
+  # SOaC Streaming Orchestrator
+  orchestrator:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.orchestrator
+    container_name: soac-orchestrator
+    environment:
+      - DATABASE_URL=postgresql://soac:soac_password_change_me@postgres:5432/soac
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - soac-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  soac-network:
+    driver: bridge
