@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOaC Framework</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+        }
+        h1 { font-size: 3rem; margin-bottom: 1rem; }
+        p { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .feature h3 { margin-bottom: 0.5rem; }
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 0.5rem;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ SOaC Framework</h1>
+        <p>Security Operations as Code - Next Generation Security Platform</p>
+        
+        <div>
+            <a href="/api/health" class="btn">API Health</a>
+            <a href="/api/stats" class="btn">Statistics</a>
+            <a href="https://github.com/yourusername/soac-framework" class="btn">GitHub</a>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>🔍 Threat Hunting</h3>
+                <p>AI-powered proactive hunting</p>
+            </div>
+            <div class="feature">
+                <h3>🤖 AI Assistant</h3>
+                <p>Natural language queries</p>
+            </div>
+            <div class="feature">
+                <h3>📊 Detection Rules</h3>
+                <p>28+ pre-built rules</p>
+            </div>
+            <div class="feature">
+                <h3>🌐 Multi-Platform</h3>
+                <p>21+ platforms supported</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

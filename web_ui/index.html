@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOaC Framework - Security Operations as Code</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--secondary);
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .stat-card .label {
+            font-size: 0.875rem;
+            color: var(--secondary);
+            margin-top: 0.25rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .filter-select {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            min-width: 150px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--light);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 1rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-high { background: #fee2e2; color: #991b1b; }
+        .badge-medium { background: #fef3c7; color: #92400e; }
+        .badge-low { background: #dbeafe; color: #1e40af; }
+        .badge-critical { background: #fecaca; color: #7f1d1d; }
+        .badge-entraid { background: #dbeafe; color: #1e40af; }
+        .badge-paloalto { background: #fef3c7; color: #92400e; }
+        .badge-enabled { background: #d1fae5; color: #065f46; }
+        .badge-disabled { background: #f3f4f6; color: #6b7280; }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--secondary);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-healthy { background: var(--success); }
+        .status-warning { background: var(--warning); }
+        .status-error { background: var(--danger); }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛡️ SOaC Framework</h1>
+        <p>Security Operations as Code - v0.1.0</p>
+    </div>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="switchTab('rules')">🔍 Detection Rules</button>
+            <button class="nav-tab" onclick="switchTab('incidents')">🚨 Incidents</button>
+            <button class="nav-tab" onclick="switchTab('translator')">🔄 CQL Translator</button>
+            <button class="nav-tab" onclick="switchTab('platforms')">🔌 Platforms</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <h3>Total Rules</h3>
+                    <div class="value" id="totalRules">-</div>
+                    <div class="label">Detection rules loaded</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Incidents</h3>
+                    <div class="value" id="activeIncidents">-</div>
+                    <div class="label">Open & investigating</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Platforms</h3>
+                    <div class="value" id="totalPlatforms">-</div>
+                    <div class="label">Supported integrations</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Enabled Rules</h3>
+                    <div class="value" id="enabledRules">-</div>
+                    <div class="label">Currently active</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Rules by Platform</h2>
+                    </div>
+                    <div id="rulesByPlatform"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Rules by Severity</h2>
+                    </div>
+                    <div id="rulesBySeverity"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recent Activity</h2>
+                </div>
+                <p style="color: var(--secondary);">Activity monitoring coming soon...</p>
+            </div>
+        </div>
+
+        <!-- Detection Rules Tab -->
+        <div id="rules" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Detection Rules</h2>
+                    <button class="btn btn-primary" onclick="showCreateRuleForm()">+ Create Rule</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" class="search-input" id="ruleSearch" placeholder="🔍 Search rules..." onkeyup="filterRules()">
+                    <select class="filter-select" id="platformFilter" onchange="filterRules()">
+                        <option value="">All Platforms</option>
+                        <option value="entraid">EntraID</option>
+                        <option value="paloalto">Palo Alto</option>
+                    </select>
+                    <select class="filter-select" id="severityFilter" onchange="filterRules()">
+                        <option value="">All Severities</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table id="rulesTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Platform</th>
+                                <th>Severity</th>
+                                <th>Use Case</th>
+                                <th>MITRE</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rulesTableBody">
+                            <tr><td colspan="6" class="loading">Loading rules...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incidents Tab -->
+        <div id="incidents" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Incidents</h2>
+                    <button class="btn btn-primary" onclick="showCreateIncidentForm()">+ Create Incident</button>
+                </div>
+
+                <div class="table-container">
+                    <table id="incidentsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                                <th>Use Case</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incidentsTableBody">
+                            <tr><td colspan="6" class="loading">Loading incidents...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- CQL Translator Tab -->
+        <div id="translator" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>CQL Query Translator</h2>
+                </div>
+
+                <div class="form-group">
+                    <label>CQL Query</label>
+                    <textarea id="cqlInput" placeholder="Enter your CQL query here...
+Example: event.outcome = failure | count by user.name"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Target Platform</label>
+                    <select id="targetPlatform">
+                        <option value="splunk">Splunk</option>
+                        <option value="elastic">Elastic</option>
+                        <option value="sentinel">Microsoft Sentinel</option>
+                        <option value="chronicle">Google Chronicle</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="translateQuery()">🔄 Translate</button>
+
+                <div id="translationResult" style="margin-top: 1.5rem; display: none;">
+                    <h3 style="margin-bottom: 1rem;">Translated Query:</h3>
+                    <div class="code-block" id="translatedQuery"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platforms Tab -->
+        <div id="platforms" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Supported Platforms</h2>
+                </div>
+                <div id="platformsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5001/api';
+        let allRules = [];
+        let allIncidents = [];
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Load data for the tab
+            if (tabName === 'dashboard') loadDashboard();
+            if (tabName === 'rules') loadRules();
+            if (tabName === 'incidents') loadIncidents();
+            if (tabName === 'platforms') loadPlatforms();
+        }
+
+        // Load dashboard stats
+        async function loadDashboard() {
+            try {
+                const [stats, rules, incidents] = await Promise.all([
+                    fetch(`${API_BASE}/stats`).then(r => r.json()),
+                    fetch(`${API_BASE}/detection-rules`).then(r => r.json()),
+                    fetch(`${API_BASE}/incidents`).then(r => r.json())
+                ]);
+
+                document.getElementById('totalRules').textContent = stats.detection_rules.total;
+                document.getElementById('enabledRules').textContent = stats.detection_rules.enabled;
+                document.getElementById('activeIncidents').textContent = stats.incidents.open + stats.incidents.in_progress;
+                document.getElementById('totalPlatforms').textContent = stats.platforms.supported;
+
+                // Rules by platform
+                let platformHTML = '';
+                for (const [platform, count] of Object.entries(stats.detection_rules.by_platform)) {
+                    platformHTML += `
+                        <div style="display: flex; justify-content: space-between; padding: 0.75rem; border-bottom: 1px solid var(--border);">
+                            <span><span class="badge badge-${platform}">${platform}</span></span>
+                            <strong>${count} rules</strong>
+                        </div>
+                    `;
+                }
+                document.getElementById('rulesByPlatform').innerHTML = platformHTML;
+
+                // Rules by severity
+                const severityCounts = rules.reduce((acc, rule) => {
+                    acc[rule.severity] = (acc[rule.severity] || 0) + 1;
+                    return acc;
+                }, {});
+
+                let severityHTML = '';
+                for (const [severity, count] of Object.entries(severityCounts)) {
+                    severityHTML += `
+                        <div style="display: flex; justify-content: space-between; padding: 0.75rem; border-bottom: 1px solid var(--border);">
+                            <span><span class="badge badge-${severity}">${severity}</span></span>
+                            <strong>${count} rules</strong>
+                        </div>
+                    `;
+                }
+                document.getElementById('rulesBySeverity').innerHTML = severityHTML;
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // Load detection rules
+        async function loadRules() {
+            try {
+                const response = await fetch(`${API_BASE}/detection-rules`);
+                allRules = await response.json();
+                displayRules(allRules);
+            } catch (error) {
+                console.error('Error loading rules:', error);
+                document.getElementById('rulesTableBody').innerHTML = 
+                    '<tr><td colspan="6" class="empty-state">Error loading rules</td></tr>';
+            }
+        }
+
+        function displayRules(rules) {
+            const tbody = document.getElementById('rulesTableBody');
+
+            if (rules.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No rules found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = rules.map(rule => `
+                <tr onclick="viewRule(${rule.id})" style="cursor: pointer;">
+                    <td><strong>${rule.name}</strong></td>
+                    <td><span class="badge badge-${rule.platform}">${rule.platform}</span></td>
+                    <td><span class="badge badge-${rule.severity}">${rule.severity}</span></td>
+                    <td>${rule.use_case}</td>
+                    <td><small>${rule.mitre_technique || '-'}</small></td>
+                    <td><span class="badge badge-${rule.enabled ? 'enabled' : 'disabled'}">${rule.enabled ? 'Enabled' : 'Disabled'}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function filterRules() {
+            const search = document.getElementById('ruleSearch').value.toLowerCase();
+            const platform = document.getElementById('platformFilter').value;
+            const severity = document.getElementById('severityFilter').value;
+
+            const filtered = allRules.filter(rule => {
+                const matchesSearch = rule.name.toLowerCase().includes(search) || 
+                                    rule.use_case.toLowerCase().includes(search);
+                const matchesPlatform = !platform || rule.platform === platform;
+                const matchesSeverity = !severity || rule.severity === severity;
+
+                return matchesSearch && matchesPlatform && matchesSeverity;
+            });
+
+            displayRules(filtered);
+        }
+
+        function viewRule(id) {
+            const rule = allRules.find(r => r.id === id);
+            if (rule) {
+                alert(`Rule: ${rule.name}\n\nPlatform: ${rule.platform}\nSeverity: ${rule.severity}\nMITRE: ${rule.mitre_technique}\n\nCQL Query:\n${rule.cql_query}`);
+            }
+        }
+
+        // Load incidents
+        async function loadIncidents() {
+            try {
+                const response = await fetch(`${API_BASE}/incidents`);
+                allIncidents = await response.json();
+                displayIncidents(allIncidents);
+            } catch (error) {
+                console.error('Error loading incidents:', error);
+                document.getElementById('incidentsTableBody').innerHTML = 
+                    '<tr><td colspan="6" class="empty-state">Error loading incidents</td></tr>';
+            }
+        }
+
+        function displayIncidents(incidents) {
+            const tbody = document.getElementById('incidentsTableBody');
+
+            if (incidents.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No incidents found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = incidents.map(inc => `
+                <tr>
+                    <td><strong>#${inc.id || inc.incident_id}</strong></td>
+                    <td>${inc.title}</td>
+                    <td><span class="badge badge-${inc.severity}">${inc.severity}</span></td>
+                    <td>${inc.status}</td>
+                    <td>${inc.use_case}</td>
+                    <td>${new Date(inc.created_at).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        // CQL Translator
+        async function translateQuery() {
+            const query = document.getElementById('cqlInput').value;
+            const platform = document.getElementById('targetPlatform').value;
+
+            if (!query) {
+                alert('Please enter a CQL query');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/cql/translate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, platform })
+                });
+
+                const result = await response.json();
+
+                document.getElementById('translatedQuery').textContent = result.translated;
+                document.getElementById('translationResult').style.display = 'block';
+            } catch (error) {
+                alert('Error translating query: ' + error.message);
+            }
+        }
+
+        // Load platforms
+        async function loadPlatforms() {
+            try {
+                const response = await fetch(`${API_BASE}/platforms`);
+                const data = await response.json();
+
+                const platformsList = document.getElementById('platformsList');
+                platformsList.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+                        ${data.platforms.map(p => `
+                            <div style="padding: 1rem; border: 1px solid var(--border); border-radius: 6px; text-align: center;">
+                                <span class="status-indicator status-healthy"></span>
+                                <strong>${p}</strong>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading platforms:', error);
+            }
+        }
+
+        function showCreateRuleForm() {
+            alert('Create Rule form - Coming soon!\n\nFor now, use the API:\ncurl -X POST http://localhost:5001/api/detection-rules');
+        }
+
+        function showCreateIncidentForm() {
+            alert('Create Incident form - Coming soon!\n\nFor now, use the API:\ncurl -X POST http://localhost:5001/api/incidents');
+        }
+
+        // Initialize dashboard on load
+        loadDashboard();
+    </script>
+</body>
+</html>
