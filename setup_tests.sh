@@ -11,8 +11,8 @@ EOF
 
 echo "Created tests/test_sample.py with a simple test."
 
-# Path to your GitHub Actions workflow file (adjust if needed)
-WORKFLOW_FILE=".github/workflows/python-app.yml"
+# Path to your GitHub Actions workflow file
+WORKFLOW_FILE=".github/workflows/python-tests.yml"
 
 # Check if workflow file exists
 if [ ! -f "$WORKFLOW_FILE" ]; then
