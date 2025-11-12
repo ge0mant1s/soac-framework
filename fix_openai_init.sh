@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Find all Python files in your project
+# Find all Python files in your project that contain 'OpenAI('
 files=$(grep -rl "OpenAI(" . --include \*.py)
 
 echo "Fixing OpenAI client initialization in files:"
