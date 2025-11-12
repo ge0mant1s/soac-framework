@@ -12,7 +12,7 @@ class OpenAIAssistant(BaseAIAssistant):
         self.api_key = os.getenv("OPENAI_API_KEY")
         if not self.api_key:
             raise ValueError("OPENAI_API_KEY environment variable not set")
-        self.client = openai.OpenAI(api_key=self.api_key)
+        self.client = openai.OpenAI()
 
     def natural_language_to_cql(self, nl_query: str) -> dict:
         prompt = f"Convert this natural language query to a CQL query:\n\n{nl_query}\n\nCQL:"
