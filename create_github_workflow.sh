@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > .github/workflows/python-tests.yml << 'EOF'
 name: Python Tests
 
 on:
@@ -33,3 +37,6 @@ jobs:
       run: |
         source .venv/bin/activate
         pytest tests/
+EOF
+
+echo "GitHub Actions workflow file created at .github/workflows/python-tests.yml"

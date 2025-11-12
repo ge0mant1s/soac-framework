@@ -1,30 +1,21 @@
 #!/bin/bash
+set -e
 
-# Create tests directory if it doesn't exist
-mkdir -p tests
+# Use Python 3.11 (assumes pyenv or system Python 3.11 is installed)
+# If using GitHub Actions, this is handled by actions/setup-python
 
-# Create a simple test file
-cat > tests/test_sample.py << 'EOF'
-def test_example():
-    assert 1 + 1 == 2
-EOF
+echo "Using Python version:"
+python3 --version
 
-echo "Created tests/test_sample.py with a simple test."
+# Upgrade pip
+python3 -m pip install --upgrade pip
 
-# Path to your GitHub Actions workflow file
-WORKFLOW_FILE=".github/workflows/python-tests.yml"
+# Install dependencies
+pip install -r requirements.txt
+pip install pytest
 
-# Check if workflow file exists
-if [ ! -f "$WORKFLOW_FILE" ]; then
-  echo "Workflow file $WORKFLOW_FILE not found. Please check the path."
-  exit 1
-fi
+# Export PYTHONPATH to include current directory (project root)
+export PYTHONPATH=$(pwd)
 
-# Update the workflow file to run pytest on tests/ folder
-# This replaces any line starting with 'run: pytest' with 'run: pytest tests/'
-
-sed -i.bak -E 's|run: pytest.*|run: pytest tests/|' "$WORKFLOW_FILE"
-
-echo "Updated $WORKFLOW_FILE to run 'pytest tests/'"
-
-echo "Done. Please commit and push these changes."
+# Run tests
+pytest tests/
