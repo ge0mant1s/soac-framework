@@ -1,9 +1,18 @@
 import os
 from openai import OpenAI
-from .base_ai import BaseAIAssistant
+from abc import ABC, abstractmethod
+
+class BaseAIAssistant(ABC):
+    @abstractmethod
+    def natural_language_to_cql(self, nl_query: str) -> dict:
+        pass
+
+    @abstractmethod
+    def summarize_incident(self, incident_text: str) -> str:
+        pass
 
 class OpenAIAssistant(BaseAIAssistant):
-    def __init__(self, model="gpt-3.5-turbo"):
+    def __init__(self, model: str = "gpt-3.5-turbo"):
         self.model = model
         self.api_key = os.getenv("OPENAI_API_KEY")
         if not self.api_key:
