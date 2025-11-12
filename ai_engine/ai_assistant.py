@@ -5,6 +5,13 @@ SOaC AI Engine
 import os
 import openai
 
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="your_api_key",
+    version="2023-05-15",  # example version, check your SDK docs
+    base_url="https://api.openai.com/v1"
+)
 class AIAssistant:
     def __init__(self, model="gpt-3.5-turbo"): # Changed model to gpt-3.5-turbo
         self.model = model
