@@ -26,20 +26,20 @@ The SOaC (Security Operations as Code) Framework is a production-ready security 
 │                   SOaC Framework Core                       │
 │                                                             │
 │   ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐   │
-│   │ Correlation  │  │  Use Case    │  │   Threat Intel  │   │
-│   │   Engine     │  │  Manager     │  │    Module       │   │
+│   │  Correlation │  │   Use Case   │  │   Threat Intel  │   │
+│   │    Engine    │  │    Manager   │  │      Module     │   │
 │   └──────────────┘  └──────────────┘  └─────────────────┘   │
 │                                                             │
 │   ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐   │
-│   │    SOAR      │  │    Config    │  │    Detection    │   │
-│   │  Playbooks   │  │  Processor   │  │     Rules       │   │
+│   │     SOAR     │  │    Config    │  │    Detection    │   │
+│   │   Playbooks  │  │   Processor  │  │     Rules       │   │
 │   └──────────────┘  └──────────────┘  └─────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
          ▲                    ▲                   ▲
          │                    │                   │
     ┌────┴────┐          ┌────┴────┐         ┌────┴────┐
     │         │          │         │         │         │
-    │   EDR   │          │   IAM   │         │  NGFW   │
+    │   EDR   │          │   IAM   │         │   NGFW  │
     └─────────┘          └─────────┘         └─────────┘
 ```
 

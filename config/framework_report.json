@@ -1,0 +1,99 @@
+{
+  "framework_info": {
+    "name": "SOaC Framework",
+    "version": "1.0.0",
+    "organization": "SOaC Framework Team",
+    "environment": "production"
+  },
+  "use_case_coverage": {
+    "total_use_cases": 10,
+    "active_use_cases": 10,
+    "unique_techniques_covered": 18,
+    "techniques": [
+      "T1567.002",
+      "T1499",
+      "T1078.003",
+      "T1566.002",
+      "T1589.002",
+      "T1557",
+      "T1027",
+      "T1565.001",
+      "T1539",
+      "T1486",
+      "T1195.002",
+      "T1110",
+      "T1021.001",
+      "T1055.001",
+      "T1005",
+      "T1059.001",
+      "T1552",
+      "T1110.003"
+    ],
+    "coverage_by_severity": {
+      "Critical": 3,
+      "High": 5,
+      "Medium": 2
+    },
+    "coverage_by_status": {
+      "active": 10
+    }
+  },
+  "threat_landscape": {
+    "total_threat_actors": 9,
+    "by_type": {
+      "Cybercriminal": 3,
+      "Nation-State": 3,
+      "Hacktivist": 1,
+      "Insider Threat": 1,
+      "Supply Chain Adversary": 1
+    },
+    "critical_actors": [
+      "LockBit",
+      "Lazarus Group"
+    ],
+    "top_techniques": [
+      {
+        "technique": "T1005",
+        "count": 5
+      },
+      {
+        "technique": "T1486",
+        "count": 3
+      },
+      {
+        "technique": "T1059",
+        "count": 3
+      },
+      {
+        "technique": "T1567",
+        "count": 3
+      },
+      {
+        "technique": "T1190",
+        "count": 2
+      },
+      {
+        "technique": "T1195",
+        "count": 2
+      },
+      {
+        "technique": "T1499",
+        "count": 2
+      },
+      {
+        "technique": "T1021.001",
+        "count": 1
+      },
+      {
+        "technique": "T1053",
+        "count": 1
+      },
+      {
+        "technique": "T1566.001",
+        "count": 1
+      }
+    ],
+    "total_iocs": 0
+  },
+  "available_playbooks": 6
+}

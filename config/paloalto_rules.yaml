@@ -1,0 +1,173 @@
+- category: Beaconing
+  detection_rule: Hosts repeatedly connecting to the same external IP (possible beaconing/C2).
+  id: PALOALTO-001
+  incident_rule: Pattern sustained across multiple hosts or windows; verify with EDR/DNS
+    intel.
+  mitre_tactic: Command and Control
+  mitre_technique: T1071.001 (Web Protocols)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| groupBy([event.source.ip,\
+    \ event.destination.ip, event.destination.port],\n          function=count(as=\"\
+    sessions\"),\n          limit=100000)\n| sessions >= 200\n| sort(field=sessions,\
+    \ order=desc, limit=2000)"
+  severity: High
+  source: PaloAlto
+  use_case: Intrusion
+- category: Data Exfiltration
+  detection_rule: Large outbound bytes to the same external ASN or domain group (exfiltration
+    risk).
+  id: PALOALTO-002
+  incident_rule: '>= 1 GB to non-corporate ASN or many destinations; align with DLP
+    alerts.'
+  mitre_tactic: Exfiltration
+  mitre_technique: T1041 (Exfiltration Over C2 Channel)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| groupBy([event.source.ip,\
+    \ event.destination.as.organization.name],\n          function=sum(event.source.bytes,\
+    \ as=\"bytes_out\"),\n          limit=100000)\n| bytes_out >= 1000000000\n| sort(field=bytes_out,\
+    \ order=desc, limit=2000)"
+  severity: High
+  source: PaloAlto
+  use_case: Attack Against Data
+- category: Geo Anomaly
+  detection_rule: Traffic to rare destination countries for the org.
+  id: PALOALTO-003
+  incident_rule: Multiple sources to the same rare country or risky ASN.
+  mitre_tactic: Command and Control
+  mitre_technique: T1071.001 (Web Protocols)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| event.destination.geo.country_name\
+    \ !~ /(Spain|Switzerland|Germany|France|United Kingdom|United States)/i\n| groupBy([event.destination.geo.country_name,\
+    \ event.source.ip],\n          function=count(as=\"sessions\"),\n          limit=100000)\n\
+    | sessions >= 50\n| sort(field=sessions, order=desc, limit=2000)"
+  severity: Medium-High
+  source: PaloAlto
+  use_case: Intrusion
+- category: Stability Issues
+  detection_rule: Spike in TCP reset end reasons (e.g., tcp-rst-from-client/server).
+  id: PALOALTO-004
+  incident_rule: Burst tied to a destination ASN or a single rule; investigate reachability/attack.
+  mitre_tactic: Impact
+  mitre_technique: T1498 (Network DoS)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| groupBy([event.panw.panos.endreason,\
+    \ event.destination.as.organization.name],\n          function=count(as=\"events\"\
+    ),\n          limit=100000)\n| events >= 200\n| sort(field=events, order=desc,\
+    \ limit=2000)"
+  severity: Medium
+  source: PaloAlto
+  use_case: Misconfiguration / DoS
+- category: Tunneling
+  detection_rule: SSL traffic on uncommon destination ports (not 443/8443/9443).
+  id: PALOALTO-005
+  incident_rule: Many hosts toward the same uncommon port; potential covert tunnel.
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1090 (Proxy)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| event.network.application\
+    \ = ssl\n| (event.destination.port !in [443, 8443, 9443])\n| groupBy([event.source.ip,\
+    \ event.destination.ip, event.destination.port],\n          function=count(as=\"\
+    sessions\"),\n          limit=100000)\n| sessions >= 20\n| sort(field=sessions,\
+    \ order=desc, limit=2000)"
+  severity: Medium-High
+  source: PaloAlto
+  use_case: Intrusion
+- category: Policy Gaps
+  detection_rule: Unknown apps or high risk level (>=4) permitted by policy.
+  id: PALOALTO-006
+  incident_rule: Same rule allows large volume; tighten rulebase or enable App-ID
+    controls.
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1562 (Impair Defenses)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| (event.network.application\
+    \ =~ /^unknown-/i or event.panw.panos.application.risk_level >= 4)\n| groupBy([event.rule.name,\
+    \ event.network.application],\n          function=count(as=\"hits\"),\n      \
+    \    limit=100000)\n| hits >= 100\n| sort(field=hits, order=desc, limit=2000)"
+  severity: High
+  source: PaloAlto
+  use_case: Misconfiguration / Poor Security
+- category: Malicious App Traits
+  detection_rule: Application characteristics include 'used-by-malware' but traffic
+    is allowed.
+  id: PALOALTO-007
+  incident_rule: Multiple sources or large byte totals; correlate with endpoint alerts.
+  mitre_tactic: Command and Control
+  mitre_technique: T1071 (Application Layer)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| event.panw.panos.application.characteristics\
+    \ =~ /used-by-malware/i\n| groupBy([event.source.ip, event.network.application],\n\
+    \          function=[count(as=\"sessions\"), sum(event.network.bytes, as=\"bytes_total\"\
+    )],\n          limit=100000)\n| sessions >= 10\n| sort(field=sessions, order=desc,\
+    \ limit=2000)"
+  severity: High
+  source: PaloAlto
+  use_case: Malware
+- category: Encrypted Tunnels
+  detection_rule: Encrypted-tunnel subcategory heading to external ASNs.
+  id: PALOALTO-008
+  incident_rule: High volume or many sources to the same ASN.
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1090 (Proxy)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| event.panw.panos.application.sub_category\
+    \ = encrypted-tunnel\n| groupBy([event.destination.as.organization.name, event.source.ip],\n\
+    \          function=count(as=\"sessions\"),\n          limit=100000)\n| sessions\
+    \ >= 30\n| sort(field=sessions, order=desc, limit=2000)"
+  severity: Medium-High
+  source: PaloAlto
+  use_case: Intrusion / Evasion
+- category: Lateral Movement
+  detection_rule: Allowed traffic where egress zone is not INTERNET (potential lateral
+    movement).
+  id: PALOALTO-009
+  incident_rule: High volume from a single source or to sensitive internal IPs.
+  mitre_tactic: Lateral Movement
+  mitre_technique: T1021 (Remote Services)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| event.observer.egress.zone\
+    \ !~ /INTERNET/i\n| groupBy([event.source.ip, event.destination.ip, event.observer.egress.zone],\n\
+    \          function=count(as=\"sessions\"),\n          limit=100000)\n| sessions\
+    \ >= 50\n| sort(field=sessions, order=desc, limit=2000)"
+  severity: Medium
+  source: PaloAlto
+  use_case: Intrusion
+- category: Off-hours Activity
+  detection_rule: After-hours surge of allowed sessions by rule.
+  id: PALOALTO-010
+  incident_rule: Repeated nights or high-risk apps involved.
+  mitre_tactic: Collection / C2
+  mitre_technique: T1071 (Application Layer)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| eval(hour = time:hour(@timestamp))\n\
+    | (hour < 7 or hour > 20)\n| groupBy([event.rule.name],\n          function=count(as=\"\
+    offhour_sessions\"),\n          limit=100000)\n| offhour_sessions >= 200\n| sort(field=offhour_sessions,\
+    \ order=desc, limit=2000)"
+  severity: Medium-High
+  source: PaloAlto
+  use_case: Intrusion
+- category: NAT Anomaly
+  detection_rule: Single internal source uses many distinct NAT source ports (port
+    hopping).
+  id: PALOALTO-011
+  incident_rule: Correlate with geo/risky ASN anomalies or beaconing detections.
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1090 (Proxy)
+  query: '#repo = paloalto
+
+    | event.panw.panos.action = allow
+
+    | groupBy([event.source.ip, event.source.nat.port], function=count(as="per_port"),
+    limit=100000)
+
+    | groupBy([event.source.ip], function=[count(as="distinct_nat_ports"), sum(per_port,
+    as="sessions")], limit=100000)
+
+    | distinct_nat_ports >= 200
+
+    | sort(field=distinct_nat_ports, order=desc, limit=2000)'
+  severity: Medium
+  source: PaloAlto
+  use_case: Intrusion / Evasion
+- category: Rule Tuning
+  detection_rule: Identify rules allowing the most bytes for review and tuning.
+  id: PALOALTO-012
+  incident_rule: Large sudden changes or unexpected top talkers.
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1562 (Impair Defenses)
+  query: "#repo = paloalto\n| event.panw.panos.action = allow\n| groupBy([event.rule.name],\n\
+    \          function=sum(event.network.bytes, as=\"bytes_total\"),\n          limit=100000)\n\
+    | sort(field=bytes_total, order=desc, limit=2000)"
+  severity: Low-Medium
+  source: PaloAlto
+  use_case: Misconfiguration / Governance

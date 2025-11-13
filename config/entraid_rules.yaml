@@ -1,0 +1,350 @@
+- category: Account Abuse
+  detection_rule: Many authentication failures per account (possible brute-force or
+    credential stuffing).
+  id: ENTRAID-001
+  incident_rule: Burst from same IP and subsequent success; correlate with Umbrella/PAN
+    EDR.
+  mitre_tactic: Credential Access
+  mitre_technique: T1110 (Brute Force)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | event.outcome = failure
+
+    | groupBy([user.name, source.ip], function=count(as="fails"), limit=100000)
+
+    | fails >= 15
+
+    | sort(field=fails, order=desc, limit=2000)'
+  severity: High
+  source: EntraID
+  use_case: Intrusion
+- category: Account Abuse
+  detection_rule: One IP failing across many users (password spraying).
+  id: ENTRAID-002
+  incident_rule: "\u226510 users and \u226530 total fails from one IP in a window."
+  mitre_tactic: Credential Access
+  mitre_technique: T1110.003 (Password Spraying)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | event.outcome = failure
+
+    | groupBy([source.ip, user.name], function=count(as="per_user"), limit=100000)
+
+    | groupBy([source.ip], function=[count(as="users_targeted"), sum(per_user, as="total_fails")],
+    limit=100000)
+
+    | users_targeted >= 10 and total_fails >= 30
+
+    | sort(field=users_targeted, order=desc, limit=2000)'
+  severity: High
+  source: EntraID
+  use_case: Intrusion
+- category: Account Takeover
+  detection_rule: Success following a burst of failures (possible account takeover).
+  id: ENTRAID-003
+  incident_rule: "Success within 30 minutes after \u22658 failures; pivot to device\
+    \ and app used."
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1078 (Valid Accounts)
+  query: "#event.module=entraid\n| event.dataset = entraid.signin\n| event.outcome\
+    \ = failure\n| groupBy([user.name], function=[count(as=\"fails\"), max(@timestamp,\
+    \ as=\"last_fail_ts\")], limit=100000)\n| fails >= 8\n| join(\n  {\n    #event.module=entraid\n\
+    \    | event.dataset = entraid.signin\n    | event.outcome = success\n    | select([@timestamp,\
+    \ user.name, source.ip])\n  },\n  field=user.name,\n  include=[@timestamp, user.name,\
+    \ source.ip]\n)\n| eval(success_time = @timestamp)\n| eval(delta_ms = success_time\
+    \ - last_fail_ts)\n| delta_ms <= 1800000\n| sort(field=fails, order=desc, limit=2000)"
+  severity: High
+  source: EntraID
+  use_case: Intrusion
+- category: Geo Anomaly
+  detection_rule: User signs in from multiple countries too quickly (geo-velocity).
+  id: ENTRAID-004
+  incident_rule: Two or more distinct countries for the same user in a short time
+    window.
+  mitre_tactic: Credential Access
+  mitre_technique: T1110 / (Geo Anomaly)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | event.outcome = success
+
+    | groupBy([user.name, source.geo.country_name, source.ip], function=min(@timestamp,
+    as="first_seen"), limit=100000)
+
+    | groupBy([user.name], function=count(as="geo_hops"), limit=100000)
+
+    | geo_hops >= 2
+
+    | sort(field=geo_hops, order=desc, limit=2000)'
+  severity: High
+  source: EntraID
+  use_case: Intrusion
+- category: Legacy Auth
+  detection_rule: Legacy/basic/IMAP/POP/ActiveSync or non-modern auth clients used.
+  id: ENTRAID-005
+  incident_rule: Repeated usage by same user or many users; block or enforce CA.
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1556 (Modify Auth Process)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | Vendor.properties.clientAppUsed =~ /(Legacy|Basic|IMAP|POP|ActiveSync)/i
+
+    | groupBy([user.name, Vendor.properties.clientAppUsed], function=count(as="events"),
+    limit=100000)
+
+    | events >= 5
+
+    | sort(field=events, order=desc, limit=2000)'
+  severity: Medium-High
+  source: EntraID
+  use_case: Misconfiguration / Poor Security
+- category: Risk Flags
+  detection_rule: Sign-ins with risk level flagged (not 'none').
+  id: ENTRAID-006
+  incident_rule: Concentrated on single user/IP or app; trigger IR workflow.
+  mitre_tactic: Credential Access
+  mitre_technique: T1110 (Risky Sign-in)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | Vendor.properties.riskLevelDuringSignIn !~ /none/i
+
+    | groupBy([user.name, Vendor.properties.riskLevelDuringSignIn], function=count(as="events"),
+    limit=100000)
+
+    | sort(field=events, order=desc, limit=2000)'
+  severity: High
+  source: EntraID
+  use_case: Intrusion
+- category: Policy Gaps
+  detection_rule: Conditional Access status = failure/reportOnlyFailure.
+  id: ENTRAID-007
+  incident_rule: Investigate policy gaps and enforce or tune rules.
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1556 (Policy Weakness)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | Vendor.properties.conditionalAccessStatus =~ /(failure|reportOnlyFailure)/i
+
+    | groupBy([user.name, Vendor.properties.conditionalAccessStatus], function=count(as="hits"),
+    limit=100000)
+
+    | sort(field=hits, order=desc, limit=2000)'
+  severity: Medium-High
+  source: EntraID
+  use_case: Misconfiguration / Policy
+- category: MFA Bypass
+  detection_rule: MFA satisfied by a token claim unexpectedly.
+  id: ENTRAID-008
+  incident_rule: Multiple occurrences per user; check session token protection & CAE.
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1556.006 (Forge Web Tokens)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | Vendor.properties.status.additionalDetails =~ /MFA requirement satisfied by
+    claim/i
+
+    | groupBy([user.name, source.ip, Vendor.properties.clientAppUsed], function=count(as="events"),
+    limit=100000)
+
+    | events >= 3
+
+    | sort(field=events, order=desc, limit=2000)'
+  severity: High
+  source: EntraID
+  use_case: Intrusion
+- category: Device Trust
+  detection_rule: Unmanaged/non-compliant device succeeded in sign-in.
+  id: ENTRAID-009
+  incident_rule: Sustained successes from unmanaged devices; escalate enforcement.
+  mitre_tactic: Initial Access
+  mitre_technique: T1078 (Valid Accounts)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | Vendor.properties.deviceDetail.trustType !~ /(Compliant|Hybrid Azure AD joined|Azure
+    AD joined)/i
+
+    | event.outcome = success
+
+    | groupBy([user.name, Vendor.properties.deviceDetail.displayName, Vendor.properties.deviceDetail.trustType],
+    function=count(as="events"), limit=100000)
+
+    | events >= 5
+
+    | sort(field=events, order=desc, limit=2000)'
+  severity: Medium-High
+  source: EntraID
+  use_case: Misconfiguration / Poor Security
+- category: Off-hours
+  detection_rule: Successful sign-ins outside business hours.
+  id: ENTRAID-010
+  incident_rule: Repeated off-hours by same user, new locations, or risky clients.
+  mitre_tactic: Credential Access
+  mitre_technique: T1110 (After-hours)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | event.outcome = success
+
+    | eval(hour = time:hour(@timestamp))
+
+    | (hour < 7 or hour > 20)
+
+    | groupBy([user.name, source.ip], function=count(as="offhour_signins"), limit=100000)
+
+    | offhour_signins >= 5
+
+    | sort(field=offhour_signins, order=desc, limit=2000)'
+  severity: Medium
+  source: EntraID
+  use_case: Intrusion
+- category: App Consent
+  detection_rule: Non-standard appDisplayName used for sign-ins.
+  id: ENTRAID-011
+  incident_rule: "\u22653 successes to unusual app; verify consent & permissions."
+  mitre_tactic: Initial Access
+  mitre_technique: T1528 (Steal App Token)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | Vendor.properties.appDisplayName !~ /(Microsoft|Office|Teams|Exchange|SharePoint|Edge)/i
+
+    | event.outcome = success
+
+    | groupBy([Vendor.properties.appDisplayName, user.name], function=count(as="events"),
+    limit=100000)
+
+    | events >= 3
+
+    | sort(field=events, order=desc, limit=2000)'
+  severity: Medium-High
+  source: EntraID
+  use_case: Supply Chain Attack / Intrusion
+- category: Network Policy
+  detection_rule: Named network policy context but public IP outside private ranges.
+  id: ENTRAID-012
+  incident_rule: "\u22653 events per user/IP; check CA network lists/VPN."
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1562 (Impair Defenses)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | Vendor.properties.networkLocationDetails[0].networkType = namedNetwork
+
+    | source.ip !~ /^10\./ and source.ip !~ /^192\.168\./ and source.ip !~ /^172\.(1[6-9]|2[0-9]|3[0-1])\./
+
+    | groupBy([user.name, source.ip], function=count(as="events"), limit=100000)
+
+    | events >= 3
+
+    | sort(field=events, order=desc, limit=2000)'
+  severity: Medium-High
+  source: EntraID
+  use_case: Misconfiguration / Intrusion
+- category: Token Storm
+  detection_rule: NonInteractiveUserSignInLogs volume surge (token refresh/service
+    acct).
+  id: ENTRAID-013
+  incident_rule: "\u2265500 token events per user/client; validate app health and\
+    \ scopes."
+  mitre_tactic: Persistence
+  mitre_technique: T1136 / T1098 (Service)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | Vendor.category = NonInteractiveUserSignInLogs
+
+    | groupBy([user.name, Vendor.properties.clientAppUsed], function=count(as="token_events"),
+    limit=100000)
+
+    | token_events >= 500
+
+    | sort(field=token_events, order=desc, limit=2000)'
+  severity: Medium
+  source: EntraID
+  use_case: Misconfiguration / Availability
+- category: Geo Anomaly
+  detection_rule: Successful sign-ins from countries outside allow-list.
+  id: ENTRAID-014
+  incident_rule: "\u22652 hits; verify travel or enforce CA location policy."
+  mitre_tactic: Credential Access
+  mitre_technique: T1110 (Geo)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | event.outcome = success
+
+    | source.geo.country_name !~ /(Switzerland|Germany|France|Spain|United Kingdom|United
+    States)/i
+
+    | groupBy([user.name, source.geo.country_name, source.ip], function=count(as="hits"),
+    limit=100000)
+
+    | hits >= 2
+
+    | sort(field=hits, order=desc, limit=2000)'
+  severity: Medium-High
+  source: EntraID
+  use_case: Intrusion
+- category: Legacy TLS
+  detection_rule: Legacy TLS flag observed for sign-in processing details.
+  id: ENTRAID-015
+  incident_rule: Any occurrence should be triaged; inventory old agents/browsers.
+  mitre_tactic: Credential Access
+  mitre_technique: T1556 (Auth Weakness)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | Vendor.properties.authenticationProcessingDetails[0].key = "Legacy TLS (TLS
+    1.0, 1.1, 3DES)"
+
+    | Vendor.properties.authenticationProcessingDetails[0].value =~ /True/i
+
+    | groupBy([user.name, user_agent.original], function=count(as="events"), limit=100000)
+
+    | events >= 1
+
+    | sort(field=events, order=desc, limit=2000)'
+  severity: Medium
+  source: EntraID
+  use_case: Misconfiguration / Poor Security
+- category: Guest Access
+  detection_rule: Guest/External users show elevated sign-in activity.
+  id: ENTRAID-016
+  incident_rule: "\u22655 events per guest from one IP; validate sponsorship & CA."
+  mitre_tactic: Initial Access
+  mitre_technique: T1078 (Valid Accounts)
+  query: '#event.module=entraid
+
+    | event.dataset = entraid.signin
+
+    | Vendor.properties.userType =~ /Guest|External/i
+
+    | groupBy([user.name, source.ip], function=count(as="events"), limit=100000)
+
+    | events >= 5
+
+    | sort(field=events, order=desc, limit=2000)'
+  severity: Medium-High
+  source: EntraID
+  use_case: Supply Chain Attack / Social Engineering

@@ -5,7 +5,7 @@ All notable changes to the SOaC Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2024-11-13
+## [0.1.0] - 2025-11-13
 
 ### Added
 - Initial release of SOaC Framework
@@ -25,12 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Secure credential management through environment variables
 - API authentication for CrowdStrike Falcon, Microsoft EntraID, PaloAlto
-- Data privacy features compliant with GDPR/HIPAA guidelines
+- Data privacy features compliant with GDPR/NIS2 guidelines
 
 ### Documentation
 - Comprehensive README with quick start guide
 - Detailed framework overview (Strategic and Tactical layers)
-- Use case specifications with MAGMA framework alignment
+- Use case specifications with framework alignment
 - Threat landscape documentation
 - API reference for all modules
 - Quick start guide for new users
@@ -46,14 +46,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned for v1.1
+### Planned for v0.2
 - Machine learning-based anomaly detection
 - REST API for external integrations
 - Web-based dashboard for visualization
 - Additional threat actor profiles (Maze, Ryuk, etc.)
 - Enhanced SIGMA rule generation
 
-### Planned for v1.2
+### Planned for v0.3
 - Automated threat hunting capabilities
 - Enhanced SOAR orchestration with more integrations
 - Multi-tenancy support
@@ -61,5 +61,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Real-time streaming analytics
 
 ---
-
-**Note**: This is the initial release. All references to "Straumann" in source documents have been replaced with "SOaC Framework Team" for generic deployment.
