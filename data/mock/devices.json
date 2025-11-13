@@ -1,0 +1,22 @@
+[
+  {
+    "id": "device-001",
+    "name": "PaloAlto-NGFW-Primary",
+    "type": "paloalto_ngfw",
+    "ipAddress": "192.168.1.10",
+    "status": "active",
+    "lastSync": "2025-11-12T21:38:22.535299",
+    "rulesCount": 12,
+    "description": "Primary Palo Alto Next-Generation Firewall"
+  },
+  {
+    "id": "device-002",
+    "name": "EntraID-Identity-Platform",
+    "type": "entraid",
+    "ipAddress": "cloud.microsoft.com",
+    "status": "active",
+    "lastSync": "2025-11-12T21:38:22.535301",
+    "rulesCount": 16,
+    "description": "Microsoft EntraID Identity Platform"
+  }
+]
