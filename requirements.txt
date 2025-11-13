@@ -1,46 +1,39 @@
-# Core Dependencies
-flask==3.0.0
-flask-cors==4.0.0
-pyyaml==6.0.1
-requests==2.31.0
-python-dateutil==2.8.2
-cryptography==41.0.7
 
-# Database
-sqlalchemy==2.0.23
-alembic==1.13.1
+# SOaC Framework Dependencies
+# Python 3.11+
 
-# Security
-pyjwt==2.8.0
-bcrypt==4.1.2
+# Core dependencies
+pandas>=2.0.0
+openpyxl>=3.1.0
+pyyaml>=6.0
+python-dotenv>=1.0.0
 
-# AI & NLP
-openai==1.6.1
-anthropic==0.8.1
-transformers==4.36.2
-sentence-transformers==2.2.2
+# Logging and monitoring
+loguru>=0.7.0
 
-# Data Processing
-pandas==2.1.4
-numpy==1.26.2
+# API and web frameworks
+flask>=3.0.0
+flask-cors>=4.0.0
+requests>=2.31.0
 
-# Platform SDKs
-splunk-sdk==1.7.4
-elasticsearch==8.11.1
-azure-identity==1.15.0
-azure-monitor-query==1.2.0
-boto3==1.34.14
-
-# Monitoring & Logging
-prometheus-client==0.19.0
-python-json-logger==2.0.7
+# Data processing
+numpy>=1.24.0
+jsonschema>=4.17.0
 
 # Testing
-pytest==7.4.3
-pytest-cov==4.1.0
-pytest-mock==3.12.0
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
 
-# Development
-black==23.12.1
-flake8==7.0.0
-mypy==1.8.0
+# Code quality
+black>=23.7.0
+flake8>=6.1.0
+pylint>=2.17.0
+
+# Security
+cryptography>=41.0.0
+
+# Optional: For advanced features
+# scikit-learn>=1.3.0  # For ML-based threat detection
+# redis>=4.6.0  # For caching
+# celery>=5.3.0  # For async task processing

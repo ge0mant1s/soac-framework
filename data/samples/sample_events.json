@@ -1,0 +1,114 @@
+{
+  "sample_ransomware_events": [
+    {
+      "event_type": "messagesDelivered",
+      "source": "Proofpoint",
+      "UserName": "john.doe@company.com",
+      "SenderAddress": "attacker@malicious.com",
+      "AttachmentName": "invoice.exe",
+      "SHA256HashData": "abc123def456...",
+      "timestamp": "2024-11-13T10:15:00Z"
+    },
+    {
+      "event_type": "ProcessRollup2",
+      "source": "Falcon",
+      "UserName": "john.doe",
+      "ComputerName": "LAPTOP-001",
+      "FileName": "powershell.exe",
+      "CommandLine": "powershell.exe -enc JGRpcj1DMDpcDQo=",
+      "SHA256HashData": "def789ghi012...",
+      "timestamp": "2024-11-13T10:20:00Z"
+    },
+    {
+      "event_type": "NetworkConnectIP4",
+      "source": "Falcon",
+      "UserName": "john.doe",
+      "ComputerName": "LAPTOP-001",
+      "LocalAddressIP4": "10.0.1.50",
+      "RemoteAddressIP4": "185.220.101.15",
+      "RemotePort": 443,
+      "timestamp": "2024-11-13T10:22:00Z"
+    },
+    {
+      "event_type": "FileWriteInfo",
+      "source": "Falcon",
+      "UserName": "john.doe",
+      "ComputerName": "LAPTOP-001",
+      "TargetFileName": "C:\\Users\\john.doe\\Documents\\report.docx.encrypted",
+      "timestamp": "2024-11-13T10:25:00Z"
+    }
+  ],
+  "sample_exfiltration_events": [
+    {
+      "event_type": "DataStaged",
+      "source": "Falcon",
+      "UserName": "jane.smith",
+      "ComputerName": "DESKTOP-002",
+      "TargetFileName": "C:\\Temp\\data_export.zip",
+      "timestamp": "2024-11-13T14:00:00Z"
+    },
+    {
+      "event_type": "NetworkConnectIP4",
+      "source": "Falcon",
+      "UserName": "jane.smith",
+      "ComputerName": "DESKTOP-002",
+      "LocalAddressIP4": "10.0.1.75",
+      "RemoteAddressIP4": "52.217.0.0",
+      "RemotePort": 443,
+      "timestamp": "2024-11-13T14:05:00Z"
+    },
+    {
+      "event_type": "DNS",
+      "source": "Umbrella",
+      "UserName": "jane.smith",
+      "ComputerName": "DESKTOP-002",
+      "url.domain": "dropbox.com",
+      "timestamp": "2024-11-13T14:06:00Z"
+    },
+    {
+      "event_type": "PutObject",
+      "source": "CloudTrail",
+      "UserName": "jane.smith",
+      "aws.eventName": "PutObject",
+      "cloud.resource.name": "s3://external-bucket/stolen_data.zip",
+      "timestamp": "2024-11-13T14:10:00Z"
+    }
+  ],
+  "sample_intrusion_events": [
+    {
+      "event_type": "ProcessRollup2",
+      "source": "Falcon",
+      "UserName": "system",
+      "ComputerName": "SERVER-001",
+      "FileName": "psexec.exe",
+      "CommandLine": "psexec.exe \\\\SERVER-002 -u admin cmd",
+      "timestamp": "2024-11-13T16:00:00Z"
+    },
+    {
+      "event_type": "ActiveDirectoryAuthentication",
+      "source": "Infoblox",
+      "SourceAccountUserName": "admin",
+      "TargetServiceAccessIdentifier": "SERVER-002",
+      "ComputerName": "SERVER-001",
+      "KerberosAnomaly": 1024,
+      "timestamp": "2024-11-13T16:02:00Z"
+    },
+    {
+      "event_type": "NetworkConnectIP4",
+      "source": "PAN-OS",
+      "ComputerName": "SERVER-001",
+      "LocalAddressIP4": "10.0.2.10",
+      "RemoteAddressIP4": "10.0.2.20",
+      "RemotePort": 445,
+      "timestamp": "2024-11-13T16:05:00Z"
+    },
+    {
+      "event_type": "ScheduledTaskModified",
+      "source": "Azure",
+      "UserName": "admin",
+      "ComputerName": "SERVER-002",
+      "TaskName": "BackdoorTask",
+      "timestamp": "2024-11-13T16:10:00Z"
+    }
+  ]
+}
