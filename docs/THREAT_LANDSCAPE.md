@@ -311,4 +311,4 @@ This document provides comprehensive threat intelligence for the SOaC Framework,
 
 ---
 
-**SOaC Framework Team** | Version 0.1.0
+**SOaC Framework Team** | Version 1.0.0

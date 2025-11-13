@@ -1,11 +1,11 @@
 
-# Use Case Management
+# Use Case Management - MAGMA Framework
 
 ## Overview
 
-This document structures the complete security use case library using the **Framework**, ensuring alignment from strategic objectives to operational implementation across all 10 defined threat use cases.
+This document structures the complete security use case library using the **MAGMA Framework**, ensuring alignment from strategic objectives to operational implementation across all 10 defined threat use cases.
 
-## Levels
+## MAGMA Levels
 
 | Layer | Description |
 |-------|-------------|
@@ -15,7 +15,7 @@ This document structures the complete security use case library using the **Fram
 | **M** - Mitigation | Tools, processes, and controls to detect/prevent/respond |
 | **A** - Actions | Engineering and operational tasks for implementation |
 
-## Framework Application
+## MAGMA Framework Application
 
 | Phase | Description |
 |-------|-------------|
@@ -31,7 +31,7 @@ This document structures the complete security use case library using the **Fram
 
 | Phase | Activities | Tools |
 |-------|-----------|-------|
-| 1. Initiation | Align with strategy, identify threat scenarios, assess relevance via threat intel | Threat intel feeds, ATT&CK |
+| 1. Initiation | Align with MAGMA strategy, identify threat scenarios, assess relevance via threat intel | Threat intel feeds, ATT&CK |
 | 2. Design | Create SIGMA rules aligned to tactics, techniques, and actor behavior | YAML authoring, Git |
 | 3. Testing | Validate detection efficacy using test datasets, red team, and malware emulation | Atomic Red Team, Sigma CLI |
 | 4. Deployment | Convert to SIEM/EDR-native formats (KQL, CQL), apply to detection engines, create dashboards | Falcon, Sentinel, Splunk |
@@ -300,4 +300,4 @@ This document structures the complete security use case library using the **Fram
 
 ---
 
-**SOaC Framework Team** | Version 0.1.0
+**SOaC Framework Team** | Version 1.0.0

@@ -213,4 +213,4 @@ Each pattern maps directly to SOAR response groups:
 
 ---
 
-**SOaC Framework Team** | Version 0.1.0
+**SOaC Framework Team** | Version 1.0.0
