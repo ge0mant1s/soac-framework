@@ -1,16 +1,34 @@
 
-# SOaC Framework - Phase 3B
+# SOaC Framework - Phase 3A
 
 **Security Operations as Code Framework**  
 SOaC Framework Team © 2025
 
+---
+
+**🚀 Quick Deploy to Railway**: Deploy in 10 minutes with free hosting → **[Deployment Guide](./RAILWAY_DEPLOYMENT.md)**
+
+---
+
 ## Overview
 
-Phase 3B of the SOaC Framework introduces an **intelligent detection engine** that processes operational models to detect multi-phase security threats. This phase implements real-time correlation, incident management, and automated playbook execution.
+Phase 3A of the SOaC Framework adds **complete device integration and event ingestion** capabilities. This phase creates a full end-to-end security operations pipeline: Device → Events → Detection → Incidents → Response.
 
 ### Features
 
-#### Phase 3B (Current) - Operational Models & Detection Engine
+#### Phase 3A (Current) - Device Integration & Event Ingestion
+- **🔌 Device Connectors**: Production-ready connectors for Palo Alto, Entra ID, and SIEM
+- **📥 Event Ingestion Pipeline**: Background service for automatic event collection
+- **🎭 Mock Mode**: Test with realistic mock data without real device credentials
+- **⚡ Real-Time Processing**: Events automatically feed into detection engine
+- **📊 Event Management**: Browse, filter, and analyze collected events
+- **🔍 Event Normalization**: Standardize events from different sources
+- **💚 Health Monitoring**: Track device health and connection status
+- **📈 Event Statistics**: Analytics on event types, severity, and volume
+- **🔄 Auto-Collection**: Configurable background polling (default: 5 minutes)
+- **🎯 Manual Collection**: Trigger immediate event collection from UI
+
+#### Phase 3B - Operational Models & Detection Engine
 - **🚀 Operational Model Parser**: Parse DOCX operational models into structured detection patterns
 - **🧠 Multi-Phase Detection Engine**: Detect complex attacks across multiple stages
 - **🔗 Entity Correlation**: Track events by user, computer, IP across time windows
@@ -19,14 +37,6 @@ Phase 3B of the SOaC Framework introduces an **intelligent detection engine** th
 - **🤖 Playbook Execution**: Automated response actions based on decision matrix
 - **📈 Confidence Scoring**: High/medium/low confidence based on matched phases
 - **🎯 5 Pre-Built Models**: Data Theft, Fraud, Malware, DoS, and Intrusion detection
-
-#### Phase 3A - Device Integration & Connectivity
-- **✨ Real API Integration**: Production-ready clients for Palo Alto, Entra ID, and SIEM
-- **✨ Device Synchronization**: Fetch and sync rules/configurations from security devices
-- **✨ Connection Testing**: Test device connectivity with detailed error diagnostics
-- **✨ Health Monitoring**: Real-time health metrics and status tracking
-- **✨ Device Health Dashboard**: Comprehensive monitoring dashboard for all devices
-- **✨ Automated Rule Sync**: Automatically fetch and normalize rules from devices
 
 #### Phase 2A - Core Platform
 - **Device Integration Management**: Configure and manage PaloAlto NGFW, Microsoft EntraID, and SIEM devices
@@ -471,9 +481,89 @@ docker-compose up --build frontend
 5. **HTTPS**: Use HTTPS in production environments
 6. **Credentials Storage**: Device credentials are stored in the database - consider using a secrets manager in production
 
-## Production Deployment
+## 🚂 Quick Deploy to Railway (Recommended)
 
-For production deployment:
+**Deploy to Railway.app in under 10 minutes!** ⚡
+
+Railway.app is a free cloud platform that provides:
+- ✅ **$5 free credit monthly** (no credit card required)
+- ✅ **Automatic HTTPS** and SSL certificates
+- ✅ **PostgreSQL database** included
+- ✅ **GitHub integration** for auto-deploy
+- ✅ **No local Docker needed**
+
+### Quick Deploy Steps
+
+1. **Fork this repository** to your GitHub account
+
+2. **Sign up for Railway**: [railway.app](https://railway.app)
+
+3. **Deploy in 3 clicks**:
+   - Click "Start a New Project"
+   - Select "Deploy from GitHub repo"
+   - Choose your `soac-framework` repository
+
+4. **Add PostgreSQL database**:
+   - In your Railway project, click "+ New"
+   - Select "Database" → "PostgreSQL"
+   - Railway auto-configures `DATABASE_URL`
+
+5. **Configure environment variables**:
+   
+   **Backend Service**:
+   ```env
+   SECRET_KEY=<generate-a-random-64-char-string>
+   ALGORITHM=HS256
+   ACCESS_TOKEN_EXPIRE_MINUTES=1440
+   ENVIRONMENT=production
+   FRONTEND_URL=<your-frontend-railway-url>
+   MOCK_MODE=true
+   ```
+   
+   **Frontend Service**:
+   ```env
+   VITE_API_BASE_URL=<your-backend-railway-url>
+   ```
+
+6. **Generate domains** and access your application!
+
+### 📚 Detailed Railway Deployment Guide
+
+For step-by-step instructions with screenshots, troubleshooting, and advanced configuration:
+
+**👉 See [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md)**
+
+The guide includes:
+- Complete setup walkthrough
+- Environment variables reference
+- Troubleshooting common issues
+- Custom domain setup
+- Auto-deploy from GitHub
+- Cost management tips
+
+### Railway Deployment Files
+
+All necessary files for Railway deployment are included:
+- ✅ `railway.json` / `railway.toml` - Railway configuration
+- ✅ `backend/Dockerfile.railway` - Production-optimized backend
+- ✅ `frontend/Dockerfile.railway` - Production-optimized frontend
+- ✅ `backend/entrypoint.railway.sh` - Railway startup script
+- ✅ `.env.production.example` - Environment variables template
+- ✅ `deploy-to-railway.sh` - CLI deployment script
+- ✅ `.github/workflows/railway-deploy.yml` - Auto-deploy workflow
+
+### Default Login After Railway Deployment
+
+- **Admin**: username: `admin`, password: `admin123`
+- **Analyst**: username: `analyst`, password: `analyst123`
+
+⚠️ **Change passwords immediately after first login!**
+
+---
+
+## Production Deployment (Other Platforms)
+
+For deployment to AWS, Azure, GCP, or on-premises servers:
 
 1. **Update environment variables** in `.env` files
 2. **Use production-ready database** (managed PostgreSQL service)
@@ -488,6 +578,8 @@ For production deployment:
    ```
 8. **Use production WSGI server** (Gunicorn) for backend
 9. **Set up reverse proxy** (nginx) for serving static files
+
+**For detailed deployment guides, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
 
 ## Support
 

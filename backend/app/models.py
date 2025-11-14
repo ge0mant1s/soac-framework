@@ -36,11 +36,15 @@ class Device(Base):
     connection_status = Column(String(20), default="disconnected")  # connected, disconnected, error
     last_tested = Column(DateTime, nullable=True)
     last_sync = Column(DateTime, nullable=True)
+    last_connected = Column(DateTime, nullable=True)  # Last successful connection
+    health_status = Column(String(20), default="unknown")  # healthy, unhealthy, unknown, error
+    event_count = Column(Integer, default=0)  # Total events collected
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
     rules = relationship("Rule", back_populates="device", cascade="all, delete-orphan")
+    events = relationship("Event", back_populates="device", cascade="all, delete-orphan")
 
 
 class Rule(Base):
@@ -102,3 +106,22 @@ class PlaybookExecution(Base):
     start_time = Column(DateTime, nullable=True)
     end_time = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+
+class Event(Base):
+    """Event model for collected security events"""
+    __tablename__ = "events"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    device_id = Column(UUID(as_uuid=True), ForeignKey("devices.id", ondelete="CASCADE"), nullable=False, index=True)
+    timestamp = Column(DateTime, nullable=False, index=True, default=datetime.utcnow)
+    event_type = Column(String(100), nullable=True, index=True)  # authentication, network, process_execution, etc.
+    severity = Column(String(20), nullable=True, index=True)  # critical, high, medium, low, info
+    raw_data = Column(JSON, nullable=False)  # Original event data from device
+    normalized_data = Column(JSON, nullable=True)  # Normalized event data for detection
+    processed = Column(Boolean, default=False, index=True)  # Whether event has been processed by detection engine
+    detection_results = Column(JSON, nullable=True)  # Results from detection engine
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    
+    # Relationships
+    device = relationship("Device", back_populates="events")

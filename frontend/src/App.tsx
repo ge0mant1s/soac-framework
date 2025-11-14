@@ -16,6 +16,7 @@ import DeviceHealth from './pages/DeviceHealth';
 import Rules from './pages/Rules';
 import Incidents from './pages/Incidents';
 import OperationalModels from './pages/OperationalModels';
+import Events from './pages/Events';
 
 // Create theme
 const theme = createTheme({
@@ -108,6 +109,16 @@ const App: React.FC = () => {
                 <ProtectedRoute>
                   <Layout>
                     <OperationalModels />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/events"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Events />
                   </Layout>
                 </ProtectedRoute>
               }

@@ -73,6 +73,9 @@ class DeviceResponse(DeviceBase):
     connection_status: str
     last_tested: Optional[datetime] = None
     last_sync: Optional[datetime] = None
+    last_connected: Optional[datetime] = None
+    health_status: str = "unknown"
+    event_count: int = 0
     rules_count: int = 0
     created_at: datetime
     updated_at: datetime
@@ -184,3 +187,74 @@ class ErrorResponse(BaseModel):
     success: bool = False
     error: Dict[str, Any]
     timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+
+# ============= Event Schemas =============
+
+class EventBase(BaseModel):
+    device_id: UUID
+    timestamp: datetime
+    event_type: Optional[str] = None
+    severity: Optional[str] = None
+    raw_data: Dict[str, Any]
+    normalized_data: Optional[Dict[str, Any]] = None
+
+
+class EventCreate(EventBase):
+    pass
+
+
+class EventResponse(EventBase):
+    id: UUID
+    processed: bool = False
+    detection_results: Optional[Dict[str, Any]] = None
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class EventListResponse(BaseModel):
+    """Response model for event listing with pagination"""
+    total: int
+    events: List[EventResponse]
+    page: int = 1
+    page_size: int = 50
+
+
+class EventCollectionRequest(BaseModel):
+    """Request model for manual event collection"""
+    hours: int = 24
+    limit: int = 500
+
+
+class EventCollectionResponse(BaseModel):
+    """Response model for event collection"""
+    success: bool
+    device_id: str
+    events_collected: int = 0
+    events_stored: int = 0
+    message: Optional[str] = None
+    error: Optional[str] = None
+
+
+class EventStatsResponse(BaseModel):
+    """Response model for event statistics"""
+    total_events: int = 0
+    events_by_type: Dict[str, int] = {}
+    events_by_severity: Dict[str, int] = {}
+    events_by_device: Dict[str, int] = {}
+    processed_events: int = 0
+    unprocessed_events: int = 0
+
+
+class EventFilterParams(BaseModel):
+    """Query parameters for filtering events"""
+    device_id: Optional[UUID] = None
+    event_type: Optional[str] = None
+    severity: Optional[str] = None
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
+    processed: Optional[bool] = None
+    page: int = 1
+    page_size: int = 50

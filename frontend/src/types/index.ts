@@ -28,6 +28,9 @@ export interface Device {
   connection_status: 'connected' | 'disconnected' | 'error';
   last_tested: string | null;
   last_sync: string | null;
+  last_connected: string | null;
+  health_status: 'healthy' | 'unhealthy' | 'unknown' | 'error';
+  event_count: number;
   rules_count: number;
   created_at: string;
   updated_at: string;
@@ -111,4 +114,47 @@ export interface APIError {
     details?: Record<string, any>;
   };
   timestamp: string;
+}
+
+export interface Event {
+  id: string;
+  device_id: string;
+  timestamp: string;
+  event_type: string | null;
+  severity: 'critical' | 'high' | 'medium' | 'low' | 'info' | null;
+  raw_data: Record<string, any>;
+  normalized_data: Record<string, any> | null;
+  processed: boolean;
+  detection_results: Record<string, any> | null;
+  created_at: string;
+}
+
+export interface EventListResponse {
+  total: number;
+  events: Event[];
+  page: number;
+  page_size: number;
+}
+
+export interface EventStatsResponse {
+  total_events: number;
+  events_by_type: Record<string, number>;
+  events_by_severity: Record<string, number>;
+  events_by_device: Record<string, number>;
+  processed_events: number;
+  unprocessed_events: number;
+}
+
+export interface EventCollectionRequest {
+  hours?: number;
+  limit?: number;
+}
+
+export interface EventCollectionResponse {
+  success: boolean;
+  device_id: string;
+  events_collected: number;
+  events_stored: number;
+  message?: string;
+  error?: string;
 }

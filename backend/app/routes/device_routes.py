@@ -12,10 +12,12 @@ from ..database import get_db
 from ..models import Device, Rule, User
 from ..schemas import (
     DeviceCreate, DeviceUpdate, DeviceResponse, 
-    ConnectionTestResponse, SyncResponse, HealthResponse
+    ConnectionTestResponse, SyncResponse, HealthResponse,
+    EventCollectionRequest, EventCollectionResponse
 )
 from ..auth import get_current_user
 from ..services.sync_service import SyncService
+from ..services.event_ingestion import event_ingestion_service
 
 router = APIRouter(prefix="/devices", tags=["Devices"])
 
@@ -42,6 +44,12 @@ async def list_devices(
             "connection_status": device.connection_status,
             "last_tested": device.last_tested,
             "last_sync": device.last_sync,
+            "last_connected": device.last_connected,
+            "health_status": device.health_status,
+            "event_count": device.event_count,
+            "last_connected": device.last_connected,
+            "health_status": device.health_status,
+            "event_count": device.event_count,
             "rules_count": rules_count or 0,
             "created_at": device.created_at,
             "updated_at": device.updated_at
@@ -90,6 +98,9 @@ async def create_device(
         "connection_status": device.connection_status,
         "last_tested": device.last_tested,
         "last_sync": device.last_sync,
+            "last_connected": device.last_connected,
+            "health_status": device.health_status,
+            "event_count": device.event_count,
         "rules_count": 0,
         "created_at": device.created_at,
         "updated_at": device.updated_at
@@ -126,6 +137,9 @@ async def get_device(
         "connection_status": device.connection_status,
         "last_tested": device.last_tested,
         "last_sync": device.last_sync,
+            "last_connected": device.last_connected,
+            "health_status": device.health_status,
+            "event_count": device.event_count,
         "rules_count": rules_count or 0,
         "created_at": device.created_at,
         "updated_at": device.updated_at
@@ -176,6 +190,9 @@ async def update_device(
         "connection_status": device.connection_status,
         "last_tested": device.last_tested,
         "last_sync": device.last_sync,
+            "last_connected": device.last_connected,
+            "health_status": device.health_status,
+            "event_count": device.event_count,
         "rules_count": rules_count or 0,
         "created_at": device.created_at,
         "updated_at": device.updated_at
@@ -287,3 +304,38 @@ async def get_device_health(
     result = SyncService.get_device_health(device)
     
     return HealthResponse(**result)
+
+
+@router.post("/{device_id}/collect", response_model=EventCollectionResponse)
+async def collect_device_events(
+    device_id: UUID,
+    request: EventCollectionRequest = EventCollectionRequest(),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Manually trigger event collection from a specific device
+    """
+    device = db.query(Device).filter(Device.id == device_id).first()
+    
+    if not device:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Device not found"
+        )
+    
+    if not device.enabled:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Device is disabled. Enable it before collecting events."
+        )
+    
+    # Manually collect events
+    result = event_ingestion_service.manual_collect(
+        device_id=str(device_id),
+        db=db,
+        hours=request.hours,
+        limit=request.limit
+    )
+    
+    return EventCollectionResponse(**result)

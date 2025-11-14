@@ -31,6 +31,7 @@ import {
   MonitorHeart,
   Warning,
   Security,
+  Event,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -69,6 +70,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const menuItems = [
     { text: 'Dashboard', icon: <Dashboard />, path: '/' },
     { text: 'Incidents', icon: <Warning />, path: '/incidents' },
+    { text: 'Events', icon: <Event />, path: '/events' },
     { text: 'Operational Models', icon: <Security />, path: '/operational-models' },
     { text: 'Devices', icon: <Devices />, path: '/devices' },
     { text: 'Device Health', icon: <MonitorHeart />, path: '/device-health' },

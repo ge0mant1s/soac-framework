@@ -3,7 +3,12 @@
  * API service for making HTTP requests
  */
 import axios, { AxiosError } from 'axios';
-import type { LoginResponse, Device, Rule, DashboardMetrics, DeviceStatusSummary, ConnectionTestResult, SyncResult, HealthResult } from '../types';
+import type { 
+  LoginResponse, Device, Rule, DashboardMetrics, DeviceStatusSummary, 
+  ConnectionTestResult, SyncResult, HealthResult,
+  Event, EventListResponse, EventStatsResponse, 
+  EventCollectionRequest, EventCollectionResponse
+} from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -146,6 +151,51 @@ export const dashboardAPI = {
 
   getDeviceHealth: async (): Promise<DeviceStatusSummary[]> => {
     const response = await api.get<DeviceStatusSummary[]>('/api/v1/dashboard/device-health');
+    return response.data;
+  },
+};
+
+// ============= Event API =============
+
+export const eventAPI = {
+  list: async (params?: {
+    device_id?: string;
+    event_type?: string;
+    severity?: string;
+    start_time?: string;
+    end_time?: string;
+    processed?: boolean;
+    page?: number;
+    page_size?: number;
+  }): Promise<EventListResponse> => {
+    const response = await api.get<EventListResponse>('/api/v1/events', { params });
+    return response.data;
+  },
+
+  get: async (id: string): Promise<Event> => {
+    const response = await api.get<Event>(`/api/v1/events/${id}`);
+    return response.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/api/v1/events/${id}`);
+  },
+
+  getStats: async (params?: {
+    device_id?: string;
+    hours?: number;
+  }): Promise<EventStatsResponse> => {
+    const response = await api.get<EventStatsResponse>('/api/v1/events/stats', { params });
+    return response.data;
+  },
+
+  collectAll: async (request?: EventCollectionRequest): Promise<EventCollectionResponse> => {
+    const response = await api.post<EventCollectionResponse>('/api/v1/events/collect', request || {});
+    return response.data;
+  },
+
+  collectFromDevice: async (deviceId: string, request?: EventCollectionRequest): Promise<EventCollectionResponse> => {
+    const response = await api.post<EventCollectionResponse>(`/api/v1/devices/${deviceId}/collect`, request || {});
     return response.data;
   },
 };
