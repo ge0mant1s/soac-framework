@@ -1,3 +1,4 @@
+
 # Changelog
 
 All notable changes to the SOaC Framework will be documented in this file.
@@ -5,61 +6,224 @@ All notable changes to the SOaC Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2024-11-13
+## [1.0.0] - 2025-11-14
+
+### 🎉 Initial Release
+
+The first stable release of the **Security Operations as Code (SOaC) Framework**.
 
 ### Added
-- Initial release of SOaC Framework
-- Multi-source correlation engine for threat detection
-- 10 comprehensive security use cases (Ransomware, Data Theft, DoS, Supply Chain, Intrusion, Malware, Misconfiguration, Social Engineering, Information Manipulation, Financial Fraud)
-- SOAR playbook manager with 6 pre-built playbooks
-- Threat intelligence module with 10+ threat actor profiles
-- Configuration processor for EntraID and PaloAlto NGFW rules
-- Use case manager implementing MAGMA framework
-- MITRE ATT&CK mapping for all use cases
-- Comprehensive documentation (Framework Overview, Use Cases, Threat Landscape)
-- Sample data and mock events for testing
-- Unit tests for core components
-- Setup script for easy installation
-- Configuration templates for all integrations
+
+#### Core Features
+- **Multi-Phase Threat Detection Engine**: Detect complex attacks across multiple stages
+  - Entity-based correlation (user, host, IP, file)
+  - Temporal windowing (5 min - 24 hours)
+  - Confidence scoring (high/medium/low)
+  - 10 pre-built operational models
+
+#### Device Integration
+- **Universal Device Connectors**:
+  - Palo Alto Networks NGFW (PAN-OS REST API)
+  - Microsoft Entra ID (Microsoft Graph API)
+  - SIEM platforms (Splunk, Elasticsearch)
+  - Extensible connector architecture
+
+#### Event Management
+- **Event Ingestion Pipeline**:
+  - Automatic background collection (configurable intervals)
+  - Event normalization and validation
+  - Manual and automatic sync
+  - Event enrichment
+  - Event retention policies
+
+#### Detection & Response
+- **Operational Models** (Pre-built):
+  1. Ransomware Detection
+  2. Data Theft/Exfiltration
+  3. Intrusion Detection
+  4. Financial Fraud
+  5. Denial of Service (DoS/DDoS)
+  6. Malware Infection
+  7. Supply Chain Attack
+  8. Insider Threat
+  9. Credential Abuse
+  10. Misconfiguration Detection
+
+- **SOAR Playbooks**:
+  - Endpoint Containment
+  - Identity Lockdown
+  - Network Containment
+  - Cloud Mitigation
+  - Notification & Ticketing
+  - Configurable decision matrix
+  - Manual approval workflows
+
+#### Incident Management
+- **Complete Incident Lifecycle**:
+  - Automatic incident creation
+  - Assignment and workflow management
+  - Investigation tools
+  - Event timeline visualization
+  - Status tracking
+  - MITRE ATT&CK mapping
+
+#### User Interface
+- **React + TypeScript Frontend**:
+  - Real-time dashboard
+  - Device management
+  - Rule management
+  - Event browser with filtering
+  - Incident investigation
+  - Operational models viewer
+  - Device health monitoring
+  - JWT authentication
+  - Role-based access control
+
+#### Backend API
+- **FastAPI REST API**:
+  - Comprehensive RESTful endpoints
+  - OpenAPI/Swagger documentation
+  - JWT authentication
+  - Role-based access control (Admin, Analyst, Viewer)
+  - Rate limiting
+  - Audit logging
+
+#### Deployment Options
+- **Multiple Deployment Methods**:
+  - Docker Compose (development & small production)
+  - Kubernetes (production)
+  - AWS (ECS/Fargate + RDS + ALB)
+  - Azure (Container Instances + PostgreSQL)
+  - Railway.app (free tier)
+  - One-click deployment scripts
+
+#### Infrastructure as Code
+- **Terraform Configurations**:
+  - AWS infrastructure (ECS, RDS, ALB, ECR)
+  - Azure infrastructure (coming soon)
+  - Variables and outputs
+  - Auto-scaling configuration
+
+#### CI/CD
+- **GitHub Actions Workflows**:
+  - Continuous Integration (tests, linting, security scans)
+  - Continuous Deployment (AWS, Railway)
+  - Automated Docker builds
+  - Security vulnerability scanning
+
+#### Documentation
+- **Comprehensive Documentation**:
+  - Architecture overview
+  - Installation guides (Docker, K8s, AWS, Azure)
+  - Configuration guide
+  - Device integration guide
+  - Operational models guide
+  - SOAR playbooks guide
+  - API reference
+  - Troubleshooting guide
+  - Security best practices
+  - Contributing guidelines
+
+#### Testing & Quality
+- **Testing Infrastructure**:
+  - Mock mode for testing without real devices
+  - Sample data pre-loaded
+  - Unit tests
+  - Integration tests
+  - End-to-end tests
+  - Code coverage reporting
+
+#### Security Features
+- **Enterprise Security**:
+  - JWT token-based authentication
+  - Encrypted credential storage
+  - CORS configuration
+  - Rate limiting
+  - Audit logging
+  - Security scanning in CI/CD
+
+### Technical Stack
+
+**Backend**:
+- FastAPI 0.104+
+- SQLAlchemy (ORM)
+- PostgreSQL 14+
+- Python 3.11+
+- Pydantic (validation)
+- JWT (authentication)
+
+**Frontend**:
+- React 18
+- TypeScript
+- Material-UI (MUI)
+- Vite (build tool)
+- Axios (HTTP client)
+- React Router
+
+**Infrastructure**:
+- Docker & Docker Compose
+- Kubernetes
+- Terraform
+- GitHub Actions
+- AWS (ECS, RDS, ALB, ECR)
+
+### Sample Data
+
+Included sample data for immediate testing:
+- 6 sample devices (2 NGFW, 2 EntraID, 2 SIEM)
+- 8 detection rules
+- 3 sample incidents
+- 5 operational models
+- Threat actor profiles
+- MITRE ATT&CK mappings
+
+### Known Limitations
+
+- Multi-tenancy support coming in v1.1
+- CrowdStrike Falcon connector coming in v1.1
+- AWS CloudTrail integration coming in v1.1
+- Advanced ML-based anomaly detection coming in v2.0
+- GraphQL API coming in v2.0
+
+### Deprecations
+
+None - this is the initial release.
 
 ### Security
-- Secure credential management through environment variables
-- API authentication for CrowdStrike Falcon, Microsoft EntraID, PaloAlto
-- Data privacy features compliant with GDPR/HIPAA guidelines
 
-### Documentation
-- Comprehensive README with quick start guide
-- Detailed framework overview (Strategic and Tactical layers)
-- Use case specifications with MAGMA framework alignment
-- Threat landscape documentation
-- API reference for all modules
-- Quick start guide for new users
+No known security vulnerabilities at release. Report security issues to: support@soacframework.org (coming soon)
 
-### Integrations
-- CrowdStrike Falcon EDR
-- Microsoft EntraID (Identity and Access Management)
-- Palo Alto Networks NGFW
-- Cisco Umbrella (DNS Security)
-- AWS CloudTrail
-- Azure Activity Logs
-- ServiceNow (ITSM)
+### Contributors
 
-## [Unreleased]
+Created by the SOaC Framework Team © 2025
 
-### Planned for v1.1
-- Machine learning-based anomaly detection
-- REST API for external integrations
-- Web-based dashboard for visualization
-- Additional threat actor profiles (Maze, Ryuk, etc.)
-- Enhanced SIGMA rule generation
+### Links
 
-### Planned for v1.2
-- Automated threat hunting capabilities
-- Enhanced SOAR orchestration with more integrations
-- Multi-tenancy support
-- Cloud-native deployment (Docker/Kubernetes)
-- Real-time streaming analytics
+- [GitHub Repository](https://github.com/ge0mant1s/soac-framework)
+- [Documentation](./docs/)
+- [Installation Guide](./docs/INSTALLATION.md)
+- [Quick Start](./QUICKSTART.md)
 
 ---
 
-**Note**: This is the initial release. All references to "Straumann" in source documents have been replaced with "SOaC Framework Team" for generic deployment.
+## Release Notes Template (for future releases)
+
+### [X.Y.Z] - YYYY-MM-DD
+
+#### Added
+- New features
+
+#### Changed
+- Changes to existing features
+
+#### Deprecated
+- Features marked for removal
+
+#### Removed
+- Removed features
+
+#### Fixed
+- Bug fixes
+
+#### Security
+- Security patches

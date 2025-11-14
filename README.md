@@ -1,600 +1,699 @@
+# SOaC Framework v1.0
 
-# SOaC Framework - Phase 3A
+<div align="center">
 
-**Security Operations as Code Framework**  
-SOaC Framework Team © 2025
+![SOaC Framework](./docs/images/soac-logo.png)
+
+**Security Operations as Code Framework**
+
+*Automate, Correlate, and Respond to Security Threats with Intelligence*
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](./CHANGELOG.md)
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![React](https://img.shields.io/badge/react-18.0+-blue.svg)](https://reactjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+
+[Quick Start](#-quick-start) •
+[Documentation](#-documentation) •
+[Features](#-features) •
+[Deployment](#-deployment-options) •
+[Architecture](#-architecture)
+
+</div>
 
 ---
 
-**🚀 Quick Deploy to Railway**: Deploy in 10 minutes with free hosting → **[Deployment Guide](./RAILWAY_DEPLOYMENT.md)**
+## 📖 What is SOaC Framework?
+
+The **Security Operations as Code (SOaC) Framework** is a comprehensive, open-source platform that transforms traditional security operations into automated, version-controlled, and intelligence-driven workflows. Built for modern security teams, SOaC enables you to:
+
+- **Detect Complex Threats**: Multi-phase attack detection across the entire kill chain
+- **Automate Response**: Execute intelligent playbooks based on threat patterns
+- **Integrate Everything**: Connect with your existing security infrastructure (SIEM, EDR, NGFW, IdP)
+- **Manage as Code**: Version control your security operations like you manage your infrastructure
+
+### The Problem We Solve
+
+Traditional security operations face critical challenges:
+- 🚨 **Alert Fatigue**: Too many isolated alerts, not enough actionable incidents
+- 🔍 **Lack of Correlation**: Events from different sources aren't connected
+- ⏱️ **Slow Response**: Manual investigation and response takes too long
+- 📊 **No Visibility**: Hard to understand the full attack story
+- 🔧 **Configuration Drift**: Security rules and policies are inconsistent across platforms
+
+### How SOaC Framework Helps
+
+SOaC Framework provides a unified platform that:
+
+1. **Correlates Events** across multiple security tools (endpoint, network, identity, cloud)
+2. **Detects Behavioral Chains** rather than just isolated events
+3. **Automates Response** with configurable SOAR playbooks
+4. **Provides Intelligence** with built-in threat models and MITRE ATT&CK mapping
+5. **Enables Operations as Code** - version control, testing, and deployment of security operations
 
 ---
 
-## Overview
+## ✨ Features
 
-Phase 3A of the SOaC Framework adds **complete device integration and event ingestion** capabilities. This phase creates a full end-to-end security operations pipeline: Device → Events → Detection → Incidents → Response.
+### Core Capabilities
 
-### Features
+#### 🎯 Multi-Phase Threat Detection
+- **Behavioral Correlation**: Detect attacks across multiple stages (Initial Access → Execution → Impact)
+- **Entity Tracking**: Follow users, hosts, IPs, and files across time and data sources
+- **Confidence Scoring**: High/Medium/Low confidence based on correlated evidence
+- **10 Pre-Built Use Cases**: Ransomware, Data Theft, Intrusion, Fraud, DoS, and more
 
-#### Phase 3A (Current) - Device Integration & Event Ingestion
-- **🔌 Device Connectors**: Production-ready connectors for Palo Alto, Entra ID, and SIEM
-- **📥 Event Ingestion Pipeline**: Background service for automatic event collection
-- **🎭 Mock Mode**: Test with realistic mock data without real device credentials
-- **⚡ Real-Time Processing**: Events automatically feed into detection engine
-- **📊 Event Management**: Browse, filter, and analyze collected events
-- **🔍 Event Normalization**: Standardize events from different sources
-- **💚 Health Monitoring**: Track device health and connection status
-- **📈 Event Statistics**: Analytics on event types, severity, and volume
-- **🔄 Auto-Collection**: Configurable background polling (default: 5 minutes)
-- **🎯 Manual Collection**: Trigger immediate event collection from UI
+#### 🔌 Universal Device Integration
+- **Palo Alto Networks NGFW**: Security rules, threat logs, device health
+- **Microsoft Entra ID**: Sign-in logs, user activity, conditional access policies
+- **SIEM Platforms**: Splunk, Elasticsearch integration
+- **Extensible Architecture**: Add new connectors with simple Python classes
 
-#### Phase 3B - Operational Models & Detection Engine
-- **🚀 Operational Model Parser**: Parse DOCX operational models into structured detection patterns
-- **🧠 Multi-Phase Detection Engine**: Detect complex attacks across multiple stages
-- **🔗 Entity Correlation**: Track events by user, computer, IP across time windows
-- **⚡ Real-Time Detection**: Process events in real-time with sub-second latency
-- **📊 Incident Management**: Create, assign, and track security incidents
-- **🤖 Playbook Execution**: Automated response actions based on decision matrix
-- **📈 Confidence Scoring**: High/medium/low confidence based on matched phases
-- **🎯 5 Pre-Built Models**: Data Theft, Fraud, Malware, DoS, and Intrusion detection
+#### 🤖 Automated Response (SOAR)
+- **Intelligent Playbooks**: Context-aware response actions
+- **Decision Matrix**: Execute playbooks based on threat patterns and confidence
+- **Multi-Platform Actions**: Isolate endpoints, disable accounts, block IPs/domains, generate tickets
+- **Manual Override**: Review and approve actions before execution
 
-#### Phase 2A - Core Platform
-- **Device Integration Management**: Configure and manage PaloAlto NGFW, Microsoft EntraID, and SIEM devices
-- **Detection Rules**: Create, edit, and manage security detection rules with MITRE ATT&CK mapping
-- **Real-time Dashboard**: Monitor device health, incidents, and playbook executions
-- **JWT Authentication**: Secure authentication with role-based access control
-- **REST API**: Comprehensive FastAPI backend with OpenAPI documentation
+#### 📊 Operational Intelligence
+- **Real-Time Dashboard**: Device health, incident trends, event statistics
+- **MITRE ATT&CK Mapping**: All detections mapped to tactics and techniques
+- **Threat Landscape**: Pre-loaded threat actor profiles and IOCs
+- **Incident Timeline**: Full event chain visualization for investigations
 
-## Technology Stack
+#### 🔒 Enterprise-Grade Security
+- **JWT Authentication**: Secure token-based authentication
+- **Role-Based Access Control**: Admin, Analyst, Viewer roles
+- **Encrypted Credentials**: Secure storage for device credentials
+- **Audit Logging**: Complete audit trail of all actions
 
-### Backend
-- **FastAPI**: Modern, high-performance Python web framework
-- **PostgreSQL**: Relational database for persistent storage
-- **SQLAlchemy**: ORM for database operations
-- **JWT**: Token-based authentication
-- **Pydantic**: Data validation and settings management
+#### 💻 Developer-Friendly
+- **RESTful API**: Comprehensive FastAPI backend with OpenAPI/Swagger docs
+- **Infrastructure as Code**: Docker, Kubernetes, Terraform support
+- **Version Control**: Manage detection rules and playbooks in Git
+- **Extensible**: Plugin architecture for custom integrations
 
-### Frontend
-- **React 18**: Modern UI library with hooks
-- **TypeScript**: Type-safe JavaScript
-- **Material-UI (MUI)**: Professional UI component library
-- **Vite**: Fast build tool and dev server
-- **Axios**: HTTP client for API requests
+---
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Docker and Docker Compose installed
-- Ports 3000, 8000, and 5432 available
+- **Docker** & **Docker Compose** (recommended)
+- OR **Python 3.11+** and **Node.js 18+** for local development
+- **PostgreSQL 14+** (included in Docker Compose)
 
-### Installation
-
-1. **Clone or navigate to the repository:**
-   ```bash
-   cd /home/ubuntu/code_artifacts/soac-framework
-   ```
-
-2. **Start the application:**
-   ```bash
-   docker-compose up --build
-   ```
-
-3. **Wait for initialization:**
-   - PostgreSQL will start and create the database
-   - Backend will initialize with sample data
-   - Frontend will build and start
-
-4. **Access the application:**
-   - **Frontend**: http://localhost:3000
-   - **Backend API**: http://localhost:8000
-   - **API Documentation**: http://localhost:8000/api/docs
-
-### Default Credentials
-
-- **Admin User**: 
-  - Username: `admin`
-  - Password: `admin123`
-  
-- **Analyst User**:
-  - Username: `analyst`
-  - Password: `analyst123`
-
-## Sample Data
-
-The application comes pre-loaded with sample data for immediate testing:
-
-### Devices (6 total)
-- 2 PaloAlto NGFW devices
-- 2 Microsoft EntraID tenants
-- 2 SIEM instances (Elastic, Splunk)
-
-### Detection Rules (8 total)
-- 3 EntraID authentication rules
-- 3 PaloAlto network rules
-- 2 SIEM correlation rules
-
-### Incidents (3 total)
-- Intrusion chain incident
-- Data exfiltration incident
-- Ransomware incident
-
-## Application Structure
-
-```
-soac-framework/
-├── backend/                    # FastAPI backend
-│   ├── app/
-│   │   ├── main.py            # FastAPI application
-│   │   ├── models.py          # SQLAlchemy models
-│   │   ├── schemas.py         # Pydantic schemas
-│   │   ├── auth.py            # Authentication utilities
-│   │   ├── database.py        # Database configuration
-│   │   ├── init_db.py         # Database initialization
-│   │   ├── integrations/      # ✨ Device API clients (Phase 3A)
-│   │   │   ├── paloalto_client.py
-│   │   │   ├── entraid_client.py
-│   │   │   └── siem_client.py
-│   │   ├── services/          # ✨ Business logic (Phase 3A)
-│   │   │   └── sync_service.py
-│   │   └── routes/            # API endpoints
-│   │       ├── auth_routes.py
-│   │       ├── device_routes.py
-│   │       ├── rule_routes.py
-│   │       └── dashboard_routes.py
-│   ├── requirements.txt       # Python dependencies
-│   ├── Dockerfile
-│   └── entrypoint.sh
-│
-├── frontend/                   # React frontend
-│   ├── src/
-│   │   ├── components/        # Reusable components
-│   │   │   ├── Layout.tsx
-│   │   │   └── ProtectedRoute.tsx
-│   │   ├── contexts/          # React contexts
-│   │   │   └── AuthContext.tsx
-│   │   ├── pages/             # Page components
-│   │   │   ├── Login.tsx
-│   │   │   ├── Dashboard.tsx
-│   │   │   ├── Devices.tsx
-│   │   │   ├── DeviceHealth.tsx  # ✨ New (Phase 3A)
-│   │   │   └── Rules.tsx
-│   │   ├── services/          # API services
-│   │   │   └── api.ts
-│   │   ├── types/             # TypeScript types
-│   │   │   └── index.ts
-│   │   ├── App.tsx            # Main app component
-│   │   └── main.tsx           # Entry point
-│   ├── package.json           # Node dependencies
-│   └── Dockerfile
-│
-├── docs/                       # Documentation
-│   ├── DEVICE_INTEGRATION.md  # Device integration guide (Phase 3A)
-│   └── OPERATIONAL_MODELS.md  # 🚀 Detection engine guide (Phase 3B)
-│
-└── docker-compose.yml         # Docker Compose configuration
-```
-
-## Phase 3B: Detection Engine Usage
-
-### Operational Models
-
-The framework includes 5 pre-built operational models:
-
-1. **Data Theft/Exfiltration** - Detects data staging, network transfer, and cloud uploads
-2. **Financial Fraud** - Detects account compromise, fraudulent transactions, and data exfil
-3. **Malware Infection** - Detects delivery, execution, C2, and persistence
-4. **Denial of Service** - Detects network floods, service degradation, and mitigation events
-5. **Intrusion Detection** - Detects initial foothold, privilege abuse, and lateral movement
-
-### Using the Detection Engine
-
-#### 1. View Operational Models
-
-Navigate to **Operational Models** page to:
-- View all loaded models
-- Inspect attack phases and detection logic
-- Review response playbooks
-- Check correlation patterns
-
-#### 2. Process Security Events
-
-The detection engine automatically processes events from integrated devices. You can also manually submit events:
+### Option 1: Docker Compose (Recommended)
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/detection/process-event \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "event": {
-      "UserName": "john.doe@company.com",
-      "ComputerName": "LAPTOP01",
-      "FileName": "sensitive.zip",
-      "TargetFileName": "/tmp/sensitive.zip"
-    },
-    "source": "falcon"
-  }'
+# Clone the repository
+git clone https://github.com/ge0mant1s/soac-framework.git
+cd soac-framework
+
+# Start all services
+docker-compose up --build
+
+# Access the application
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:8000
+# API Docs: http://localhost:8000/api/docs
 ```
 
-#### 3. View and Manage Incidents
+**Default Credentials:**
+- **Admin**: `admin` / `admin123`
+- **Analyst**: `analyst` / `analyst123`
 
-Navigate to **Incidents** page to:
-- View all detected incidents
-- Filter by status, severity, or time range
-- Assign incidents to analysts
-- Update incident status
-- Execute response playbooks
-- View event timeline and details
+⚠️ **Change default passwords in production!**
 
-#### 4. Execute Response Playbooks
+### Option 2: Cloud Deployment (Railway, AWS, Azure)
 
-Playbooks can be executed manually or automatically:
-
-**Manual execution:**
+**Railway.app (Free Tier Available)**
 ```bash
-curl -X POST http://localhost:8000/api/v1/incidents/INC-12345678/execute-playbook \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"mode": "manual"}'
+# One-click deploy to Railway
+./deploy-to-railway.sh
 ```
 
-**Automated execution:**
-Playbooks are automatically executed based on the decision matrix when incidents are created with high confidence.
-
-### Creating Custom Operational Models
-
-1. Create a DOCX file following the template structure (see `docs/OPERATIONAL_MODELS.md`)
-2. Upload to `/home/ubuntu/Uploads/` directory
-3. Reload models via API or UI:
-   ```bash
-   curl -X POST http://localhost:8000/api/v1/operational-models/reload \
-     -H "Authorization: Bearer YOUR_TOKEN"
-   ```
-
-For detailed documentation, see: [docs/OPERATIONAL_MODELS.md](docs/OPERATIONAL_MODELS.md)
-
-## API Endpoints
-
-### Authentication
-- `POST /api/v1/auth/login` - User login
-- `POST /api/v1/auth/logout` - User logout
-
-### Devices
-- `GET /api/v1/devices` - List all devices
-- `POST /api/v1/devices` - Create device
-- `GET /api/v1/devices/{id}` - Get device details
-- `PUT /api/v1/devices/{id}` - Update device
-- `DELETE /api/v1/devices/{id}` - Delete device
-- `POST /api/v1/devices/{id}/test` - Test device connection (✨ real implementation in Phase 3A)
-- `POST /api/v1/devices/{id}/sync` - ✨ Sync rules from device (Phase 3A)
-- `GET /api/v1/devices/{id}/health` - ✨ Get device health metrics (Phase 3A)
-
-### Rules
-- `GET /api/v1/rules` - List all rules (with filters)
-- `POST /api/v1/rules` - Create rule
-- `GET /api/v1/rules/{id}` - Get rule details
-- `PUT /api/v1/rules/{id}` - Update rule
-- `DELETE /api/v1/rules/{id}` - Delete rule
-- `PATCH /api/v1/rules/{id}/status` - Toggle rule status
-
-### Dashboard
-- `GET /api/v1/dashboard/metrics` - Get dashboard metrics
-- `GET /api/v1/dashboard/device-health` - Get device health summary
-
-## Phase 3A: Device Integration Features
-
-### Real Device Integration
-
-Phase 3A introduces production-ready API clients that enable real connectivity with security devices:
-
-#### Supported Platforms
-
-**1. Palo Alto Networks NGFW**
-- PAN-OS REST API integration
-- Security rule synchronization
-- Threat log collection
-- Device health monitoring
-- [Detailed Setup Guide](./docs/DEVICE_INTEGRATION.md#palo-alto-networks-ngfw)
-
-**2. Microsoft Entra ID (Azure AD)**
-- OAuth 2.0 authentication
-- Microsoft Graph API integration
-- Sign-in log retrieval
-- User and policy queries
-- [Detailed Setup Guide](./docs/DEVICE_INTEGRATION.md#microsoft-entra-id-azure-ad)
-
-**3. SIEM Platforms (Splunk/Elasticsearch)**
-- Splunk REST API support
-- Elasticsearch REST API support
-- Event querying and search
-- Index monitoring
-- [Detailed Setup Guide](./docs/DEVICE_INTEGRATION.md#siem-splunk--elasticsearch)
-
-### New UI Features
-
-**Device Health Dashboard** (`/device-health`)
-- Real-time connection status for all devices
-- Health metrics summary (Connected, Error, Disconnected)
-- Last tested and last sync timestamps
-- Bulk refresh capability
-- Quick connection testing
-
-**Enhanced Device Management** (`/devices`)
-- **Sync Now** button - Fetch rules from devices
-- **Last Sync** column showing sync timestamps
-- Real connection status indicators with colors
-- Detailed error messages from connection tests
-- Loading states for async operations
-
-### Using Device Integration
-
-#### 1. Configure a Device
-
-Add your device credentials via the UI:
-1. Navigate to **Devices** page
-2. Click **Add Device**
-3. Select device type and enter credentials
-4. Click **Create**
-
-#### 2. Test Connection
-
-Verify connectivity:
-- Click the **Test Connection** (🔌) button
-- View detailed connection results
-- Check for any configuration issues
-
-#### 3. Sync Rules
-
-Fetch rules from the device:
-- Click the **Sync Now** (🔄) button
-- Rules are automatically fetched and normalized
-- View sync statistics (created/updated counts)
-
-#### 4. Monitor Health
-
-Track device status:
-- Visit the **Device Health** dashboard
-- View real-time connection status
-- Monitor sync frequency and success rates
-
-### Configuration
-
-Device credentials can be configured via:
-- **UI** (recommended): Devices page
-- **Environment Variables**: See `backend/.env.example`
-- **API**: POST to `/api/v1/devices`
-
-For detailed device setup instructions, see [Device Integration Guide](./docs/DEVICE_INTEGRATION.md).
-
-## Development
-
-### Backend Development
-
+**AWS (CloudFormation)**
 ```bash
-# Navigate to backend directory
-cd backend
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run development server
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+# Deploy to AWS with CloudFormation
+./scripts/deploy-aws.sh
 ```
 
-### Frontend Development
+**See detailed deployment guides:** [Deployment Documentation](./docs/DEPLOYMENT.md)
 
-```bash
-# Navigate to frontend directory
-cd frontend
+---
 
-# Install dependencies
-npm install
+## 📚 Documentation
 
-# Run development server
-npm run dev
+### Getting Started
+- [Quick Start Guide](./QUICKSTART.md) - Get up and running in 10 minutes
+- [Installation Guide](./docs/INSTALLATION.md) - Detailed installation instructions
+- [Configuration Guide](./docs/CONFIGURATION.md) - Environment variables and settings
+
+### Core Concepts
+- [Architecture Overview](./docs/ARCHITECTURE.md) - System design and components
+- [Framework Overview](./docs/FRAMEWORK_OVERVIEW.md) - SOaC methodology and principles
+- [Threat Detection Model](./docs/THREAT_DETECTION.md) - How detection works
+
+### Feature Guides
+- [Device Integration](./docs/DEVICE_INTEGRATION.md) - Connect security devices
+- [Operational Models](./docs/OPERATIONAL_MODELS.md) - Detection patterns and use cases
+- [SOAR Playbooks](./docs/SOAR_PLAYBOOKS.md) - Automated response actions
+- [API Reference](./docs/API_REFERENCE.md) - Complete API documentation
+
+### Operational Use Cases
+- [Ransomware Detection](./docs/use-cases/RANSOMWARE.md)
+- [Data Theft/Exfiltration](./docs/use-cases/DATA_THEFT.md)
+- [Intrusion Detection](./docs/use-cases/INTRUSION.md)
+- [Financial Fraud](./docs/use-cases/FRAUD.md)
+- [Denial of Service](./docs/use-cases/DOS.md)
+
+### Deployment & Operations
+- [Docker Deployment](./docs/deployment/DOCKER.md)
+- [Kubernetes Deployment](./docs/deployment/KUBERNETES.md)
+- [AWS Deployment](./docs/deployment/AWS.md)
+- [Azure Deployment](./docs/deployment/AZURE.md)
+- [Monitoring & Logging](./docs/MONITORING.md)
+- [Troubleshooting](./docs/TROUBLESHOOTING.md)
+
+### Developer Guides
+- [Contributing Guide](./CONTRIBUTING.md)
+- [Development Setup](./docs/DEVELOPMENT.md)
+- [API Development](./docs/API_DEVELOPMENT.md)
+- [Custom Connectors](./docs/CUSTOM_CONNECTORS.md)
+- [Testing Guide](./docs/TESTING.md)
+
+---
+
+## 🏗️ Architecture
+
+### High-Level Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Security Devices                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
+│  │ Palo Alto│  │ Entra ID │  │   SIEM   │  │  Falcon  │  ...   │
+│  │   NGFW   │  │  (Azure) │  │ (Splunk) │  │   EDR    │        │
+│  └─────┬────┘  └─────┬────┘  └─────┬────┘  └─────┬────┘        │
+└────────┼─────────────┼─────────────┼─────────────┼──────────────┘
+         │             │             │             │
+         └─────────────┴─────────────┴─────────────┘
+                       │
+         ┌─────────────▼─────────────┐
+         │   Device Connectors       │
+         │  (API Integration Layer)  │
+         └─────────────┬─────────────┘
+                       │
+         ┌─────────────▼─────────────┐
+         │   Event Ingestion         │
+         │  & Normalization          │
+         └─────────────┬─────────────┘
+                       │
+         ┌─────────────▼─────────────┐
+         │   Correlation Engine      │
+         │  - Multi-phase detection  │
+         │  - Entity tracking        │
+         │  - Confidence scoring     │
+         └─────────────┬─────────────┘
+                       │
+         ┌─────────────▼─────────────┐
+         │   Incident Management     │
+         │  - Case creation          │
+         │  - Enrichment             │
+         │  - Assignment             │
+         └─────────────┬─────────────┘
+                       │
+         ┌─────────────▼─────────────┐
+         │   SOAR Playbook Engine    │
+         │  - Response automation    │
+         │  - Multi-device actions   │
+         └─────────────┬─────────────┘
+                       │
+         ┌─────────────▼─────────────┐
+         │   REST API & UI           │
+         │  - Dashboard              │
+         │  - Investigation tools    │
+         │  - Configuration          │
+         └───────────────────────────┘
 ```
 
-### Database Management
+### Technology Stack
+
+**Backend**
+- **FastAPI** - Modern Python web framework
+- **SQLAlchemy** - Database ORM
+- **PostgreSQL** - Primary data store
+- **Celery** - Background task processing
+- **Redis** - Task queue and caching
+
+**Frontend**
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Material-UI (MUI)** - Component library
+- **Recharts** - Data visualization
+- **Axios** - HTTP client
+
+**Infrastructure**
+- **Docker** - Containerization
+- **Docker Compose** - Multi-container orchestration
+- **Kubernetes** - Production orchestration
+- **Terraform** - Infrastructure as Code
+- **GitHub Actions** - CI/CD
+
+---
+
+## 🎯 Key Components
+
+### 1. Device Connectors
+Integrate with security infrastructure to collect events and execute actions.
+
+**Supported Platforms:**
+- Palo Alto Networks NGFW
+- Microsoft Entra ID (Azure AD)
+- Splunk Enterprise
+- Elasticsearch SIEM
+- CrowdStrike Falcon (coming soon)
+- More via plugin architecture
+
+### 2. Correlation Engine
+Multi-phase attack detection engine that connects events across time and systems.
+
+**Features:**
+- Entity-based correlation (user, host, IP, file)
+- Temporal windowing (5 min - 24 hours)
+- Confidence scoring
+- MITRE ATT&CK alignment
+
+### 3. Operational Models
+Pre-built detection patterns for common attack scenarios.
+
+**Included Models:**
+1. **Ransomware** - Delivery → Execution → Encryption → Impact
+2. **Data Theft** - Collection → Staging → Exfiltration → Cloud Upload
+3. **Intrusion** - Foothold → Privilege Abuse → Lateral Movement → Persistence
+4. **Financial Fraud** - Compromise → Transaction → Exfiltration → Impact
+5. **Denial of Service** - Flood → Degradation → Exhaustion → Mitigation
+6. **Malware** - Delivery → Execution → C2 → Propagation → Persistence
+7. **Supply Chain** - Vendor Entry → Execution → Persistence → Impact
+8. **Insider Threat** - Access → Collection → Exfiltration → Impact
+9. **Credential Abuse** - Access → Escalation → Persistence → Lateral Movement
+10. **Misconfiguration** - Drift → Exposure → Exploitation → Impact
+
+### 4. SOAR Playbooks
+Automated response actions based on detected threats.
+
+**Playbook Types:**
+- **Endpoint Containment** - Isolate hosts, kill processes, capture forensics
+- **Identity Lockdown** - Disable accounts, revoke sessions, reset MFA
+- **Network Containment** - Block IPs/domains, enable PCAP, rate limit
+- **Cloud Mitigation** - Revoke keys, lock resources, snapshot for forensics
+- **Notification** - Create tickets, alert teams, escalate to leadership
+
+---
+
+## 🚢 Deployment Options
+
+SOaC Framework supports multiple deployment scenarios:
+
+### 🐳 Docker Compose (Development & Small Production)
+Perfect for testing, small teams, or single-server deployments.
 
 ```bash
-# Access PostgreSQL
-docker-compose exec postgres psql -U soac_user -d soac_db
-
-# Reset database
-docker-compose down -v
 docker-compose up --build
 ```
 
-## Configuration
+**Pros:** Simple, self-contained, easy to manage
+**Best for:** Development, POC, small teams (<10 users)
 
-### Backend Configuration (.env)
-```env
-DATABASE_URL=postgresql://soac_user:soac_password@postgres:5432/soac_db
-SECRET_KEY=your-secret-key-change-this-in-production
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=1440
-FRONTEND_URL=http://localhost:3000
-ENVIRONMENT=development
-```
+### ☁️ Railway.app (Free Cloud Hosting)
+One-click deployment with free PostgreSQL included.
 
-### Frontend Configuration (.env)
-```env
-VITE_API_BASE_URL=http://localhost:8000
-```
-
-## Troubleshooting
-
-### Port Already in Use
 ```bash
-# Check what's using the port
-sudo lsof -i :3000
-sudo lsof -i :8000
-sudo lsof -i :5432
-
-# Stop Docker containers
-docker-compose down
+./deploy-to-railway.sh
 ```
 
-### Database Connection Issues
+**Pros:** Free tier, automatic HTTPS, managed database
+**Best for:** Testing, demos, small production deployments
+
+### ☁️ AWS (Production)
+Full production deployment with CloudFormation or Terraform.
+
 ```bash
-# Check PostgreSQL logs
-docker-compose logs postgres
-
-# Restart PostgreSQL
-docker-compose restart postgres
+./scripts/deploy-aws.sh
 ```
 
-### Backend Not Starting
+**Includes:**
+- ECS/Fargate for containers
+- RDS PostgreSQL for database
+- Application Load Balancer
+- CloudWatch monitoring
+- Auto-scaling
+
+**Best for:** Enterprise production, high availability
+
+### ☁️ Azure (Production)
+Deploy to Azure with ARM templates or Terraform.
+
+**Includes:**
+- Azure Container Instances
+- Azure Database for PostgreSQL
+- Application Gateway
+- Azure Monitor
+
+**Best for:** Microsoft-centric organizations
+
+### ☸️ Kubernetes (Production)
+Deploy to any Kubernetes cluster (EKS, AKS, GKE, on-premises).
+
 ```bash
-# Check backend logs
-docker-compose logs backend
-
-# Rebuild backend
-docker-compose up --build backend
+kubectl apply -f k8s/
 ```
 
-### Frontend Not Loading
-```bash
-# Check frontend logs
-docker-compose logs frontend
+**Best for:** Large scale, multi-tenant, complex environments
 
-# Rebuild frontend
-docker-compose up --build frontend
-
-# Clear node_modules
-rm -rf frontend/node_modules
-docker-compose up --build frontend
-```
-
-## Security Notes
-
-⚠️ **Important Security Considerations:**
-
-1. **Default Credentials**: Change default admin credentials in production
-2. **Secret Key**: Use a strong, unique secret key in production
-3. **Database Password**: Change database password in production
-4. **CORS**: Configure CORS settings appropriately for production
-5. **HTTPS**: Use HTTPS in production environments
-6. **Credentials Storage**: Device credentials are stored in the database - consider using a secrets manager in production
-
-## 🚂 Quick Deploy to Railway (Recommended)
-
-**Deploy to Railway.app in under 10 minutes!** ⚡
-
-Railway.app is a free cloud platform that provides:
-- ✅ **$5 free credit monthly** (no credit card required)
-- ✅ **Automatic HTTPS** and SSL certificates
-- ✅ **PostgreSQL database** included
-- ✅ **GitHub integration** for auto-deploy
-- ✅ **No local Docker needed**
-
-### Quick Deploy Steps
-
-1. **Fork this repository** to your GitHub account
-
-2. **Sign up for Railway**: [railway.app](https://railway.app)
-
-3. **Deploy in 3 clicks**:
-   - Click "Start a New Project"
-   - Select "Deploy from GitHub repo"
-   - Choose your `soac-framework` repository
-
-4. **Add PostgreSQL database**:
-   - In your Railway project, click "+ New"
-   - Select "Database" → "PostgreSQL"
-   - Railway auto-configures `DATABASE_URL`
-
-5. **Configure environment variables**:
-   
-   **Backend Service**:
-   ```env
-   SECRET_KEY=<generate-a-random-64-char-string>
-   ALGORITHM=HS256
-   ACCESS_TOKEN_EXPIRE_MINUTES=1440
-   ENVIRONMENT=production
-   FRONTEND_URL=<your-frontend-railway-url>
-   MOCK_MODE=true
-   ```
-   
-   **Frontend Service**:
-   ```env
-   VITE_API_BASE_URL=<your-backend-railway-url>
-   ```
-
-6. **Generate domains** and access your application!
-
-### 📚 Detailed Railway Deployment Guide
-
-For step-by-step instructions with screenshots, troubleshooting, and advanced configuration:
-
-**👉 See [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md)**
-
-The guide includes:
-- Complete setup walkthrough
-- Environment variables reference
-- Troubleshooting common issues
-- Custom domain setup
-- Auto-deploy from GitHub
-- Cost management tips
-
-### Railway Deployment Files
-
-All necessary files for Railway deployment are included:
-- ✅ `railway.json` / `railway.toml` - Railway configuration
-- ✅ `backend/Dockerfile.railway` - Production-optimized backend
-- ✅ `frontend/Dockerfile.railway` - Production-optimized frontend
-- ✅ `backend/entrypoint.railway.sh` - Railway startup script
-- ✅ `.env.production.example` - Environment variables template
-- ✅ `deploy-to-railway.sh` - CLI deployment script
-- ✅ `.github/workflows/railway-deploy.yml` - Auto-deploy workflow
-
-### Default Login After Railway Deployment
-
-- **Admin**: username: `admin`, password: `admin123`
-- **Analyst**: username: `analyst`, password: `analyst123`
-
-⚠️ **Change passwords immediately after first login!**
+**See:** [Complete Deployment Guide](./docs/DEPLOYMENT.md)
 
 ---
 
-## Production Deployment (Other Platforms)
+## 📁 Project Structure
 
-For deployment to AWS, Azure, GCP, or on-premises servers:
-
-1. **Update environment variables** in `.env` files
-2. **Use production-ready database** (managed PostgreSQL service)
-3. **Enable HTTPS** with SSL certificates
-4. **Set up proper logging** and monitoring
-5. **Configure backup** strategy for database
-6. **Use secrets management** (AWS Secrets Manager, Azure Key Vault, etc.)
-7. **Build frontend for production**:
-   ```bash
-   cd frontend
-   npm run build
-   ```
-8. **Use production WSGI server** (Gunicorn) for backend
-9. **Set up reverse proxy** (nginx) for serving static files
-
-**For detailed deployment guides, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
-
-## Support
-
-For questions or issues, please contact the SOaC Framework Team.
-
-## License
-
-© 2025 SOaC Framework Team. All rights reserved.
+```
+soac-framework/
+├── backend/                    # FastAPI backend application
+│   ├── app/
+│   │   ├── connectors/        # Device API clients
+│   │   │   ├── base_connector.py
+│   │   │   ├── paloalto_connector.py
+│   │   │   ├── entraid_connector.py
+│   │   │   └── siem_connector.py
+│   │   ├── models/            # Database models
+│   │   │   ├── device.py
+│   │   │   ├── rule.py
+│   │   │   ├── event.py
+│   │   │   ├── incident.py
+│   │   │   └── user.py
+│   │   ├── routes/            # API endpoints
+│   │   │   ├── auth_routes.py
+│   │   │   ├── device_routes.py
+│   │   │   ├── rule_routes.py
+│   │   │   ├── event_routes.py
+│   │   │   ├── incident_routes.py
+│   │   │   └── detection_routes.py
+│   │   ├── services/          # Business logic
+│   │   │   ├── sync_service.py
+│   │   │   ├── event_ingestion.py
+│   │   │   ├── correlation_engine.py
+│   │   │   └── playbook_executor.py
+│   │   ├── schemas/           # Pydantic schemas
+│   │   ├── main.py            # FastAPI app
+│   │   ├── database.py        # Database config
+│   │   └── auth.py            # Authentication
+│   ├── requirements.txt       # Python dependencies
+│   └── Dockerfile             # Backend container
+│
+├── frontend/                   # React frontend application
+│   ├── src/
+│   │   ├── components/        # Reusable components
+│   │   ├── pages/             # Page components
+│   │   │   ├── Dashboard.tsx
+│   │   │   ├── Devices.tsx
+│   │   │   ├── Rules.tsx
+│   │   │   ├── Events.tsx
+│   │   │   ├── Incidents.tsx
+│   │   │   └── OperationalModels.tsx
+│   │   ├── services/          # API services
+│   │   ├── contexts/          # React contexts
+│   │   └── types/             # TypeScript types
+│   ├── package.json           # Node dependencies
+│   └── Dockerfile             # Frontend container
+│
+├── docs/                       # Documentation
+│   ├── ARCHITECTURE.md
+│   ├── DEVICE_INTEGRATION.md
+│   ├── OPERATIONAL_MODELS.md
+│   ├── SOAR_PLAYBOOKS.md
+│   ├── deployment/            # Deployment guides
+│   │   ├── DOCKER.md
+│   │   ├── KUBERNETES.md
+│   │   ├── AWS.md
+│   │   └── AZURE.md
+│   ├── use-cases/             # Use case documentation
+│   │   ├── RANSOMWARE.md
+│   │   ├── DATA_THEFT.md
+│   │   ├── INTRUSION.md
+│   │   ├── FRAUD.md
+│   │   └── DOS.md
+│   └── images/                # Documentation images
+│
+├── scripts/                    # Deployment & utility scripts
+│   ├── deploy-aws.sh          # AWS CloudFormation deployment
+│   ├── deploy-azure.sh        # Azure ARM deployment
+│   ├── deploy-k8s.sh          # Kubernetes deployment
+│   └── init-db.sh             # Database initialization
+│
+├── k8s/                        # Kubernetes manifests
+│   ├── namespace.yaml
+│   ├── configmap.yaml
+│   ├── secret.yaml
+│   ├── backend-deployment.yaml
+│   ├── frontend-deployment.yaml
+│   ├── postgres-statefulset.yaml
+│   └── ingress.yaml
+│
+├── terraform/                  # Terraform IaC
+│   ├── aws/                   # AWS infrastructure
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   └── azure/                 # Azure infrastructure
+│       ├── main.tf
+│       ├── variables.tf
+│       └── outputs.tf
+│
+├── .github/                    # GitHub Actions workflows
+│   └── workflows/
+│       ├── ci.yml             # Continuous Integration
+│       ├── cd.yml             # Continuous Deployment
+│       ├── test.yml           # Automated testing
+│       └── security.yml       # Security scanning
+│
+├── data/                       # Sample & mock data
+│   ├── operational_models/    # Detection models
+│   ├── threat_actors/         # Threat intelligence
+│   ├── sample_rules/          # Example rules
+│   └── mock_events/           # Test events
+│
+├── tests/                      # Test suites
+│   ├── unit/                  # Unit tests
+│   ├── integration/           # Integration tests
+│   └── e2e/                   # End-to-end tests
+│
+├── docker-compose.yml          # Docker Compose config
+├── .env.example                # Environment variables template
+├── .gitignore                  # Git ignore rules
+├── LICENSE                     # MIT License
+├── CHANGELOG.md                # Version history
+├── CONTRIBUTING.md             # Contribution guidelines
+└── README.md                   # This file
+```
 
 ---
 
-**Note**: This is a development/testing environment. Please follow security best practices when deploying to production.
+## 🔐 Security Considerations
 
-## Important Localhost Notice
+### Production Deployment Checklist
 
-**⚠️ This localhost refers to localhost of the computer that I'm using to run the application, not your local machine. To access it locally or remotely, you'll need to deploy the application on your own system.**
+- [ ] Change all default passwords
+- [ ] Generate strong SECRET_KEY (64+ characters)
+- [ ] Enable HTTPS/TLS for all connections
+- [ ] Use managed secrets (AWS Secrets Manager, Azure Key Vault)
+- [ ] Configure CORS properly (restrict origins)
+- [ ] Enable database encryption at rest
+- [ ] Set up backup and disaster recovery
+- [ ] Configure network security groups/firewall rules
+- [ ] Enable audit logging
+- [ ] Implement rate limiting
+- [ ] Use non-root containers
+- [ ] Regular security updates and patching
+- [ ] Implement least privilege access
+- [ ] Enable MFA for admin accounts
+- [ ] Regular security assessments
 
-Follow the installation instructions above to deploy on your own machine or server.
+**See:** [Security Best Practices](./docs/SECURITY.md)
+
+---
+
+## 🧪 Testing
+
+SOaC Framework includes comprehensive testing:
+
+### Run Tests
+
+```bash
+# Backend tests
+cd backend
+pytest tests/ -v --cov=app
+
+# Frontend tests
+cd frontend
+npm test
+
+# Integration tests
+docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+
+# End-to-end tests
+npm run test:e2e
+```
+
+### Mock Mode
+
+Test without real device credentials:
+
+```bash
+# Enable mock mode
+export MOCK_MODE=true
+
+# Start application
+docker-compose up
+```
+
+Mock mode provides realistic simulated data for all device types.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community!
+
+### How to Contribute
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes** and add tests
+4. **Commit your changes**: `git commit -m 'Add amazing feature'`
+5. **Push to the branch**: `git push origin feature/amazing-feature`
+6. **Open a Pull Request**
+
+### Development Setup
+
+```bash
+# Clone repository
+git clone https://github.com/ge0mant1s/soac-framework.git
+cd soac-framework
+
+# Setup backend
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt -r requirements-dev.txt
+
+# Setup frontend
+cd ../frontend
+npm install
+
+# Run tests
+pytest  # Backend
+npm test  # Frontend
+```
+
+**See:** [Contributing Guide](./CONTRIBUTING.md)
+
+---
+
+## 📊 Roadmap
+
+### Version 1.1 (Q2 2025)
+- [ ] CrowdStrike Falcon EDR integration
+- [ ] AWS CloudTrail integration
+- [ ] Threat intelligence enrichment (MISP, TAXII)
+- [ ] Advanced analytics and ML-based anomaly detection
+- [ ] Multi-tenancy support
+
+### Version 1.2 (Q3 2025)
+- [ ] ServiceNow ITSM integration
+- [ ] Slack/Teams notifications
+- [ ] Custom playbook builder UI
+- [ ] Advanced threat hunting queries
+- [ ] Compliance reporting (SOC 2, ISO 27001)
+
+### Version 2.0 (Q4 2025)
+- [ ] AI-powered incident response recommendations
+- [ ] Automated threat hunting
+- [ ] Advanced behavioral analytics
+- [ ] GraphQL API
+- [ ] Mobile application
+
+**See full roadmap:** [ROADMAP.md](./ROADMAP.md)
+
+---
+
+## 📝 License
+
+SOaC Framework is licensed under the **MIT License**.
+
+Copyright © 2025 SOaC Framework Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+**See:** [LICENSE](./LICENSE) for full text.
+
+---
+
+## 🙏 Acknowledgments
+
+SOaC Framework builds upon best practices from:
+- **MITRE ATT&CK Framework** - Threat taxonomy and techniques
+- **NIST Cybersecurity Framework** - Security operations methodology
+- **OWASP** - Security best practices
+- **SIGMA Rules** - Detection rule format inspiration
+- **Open-source community** - Libraries and tools
+
+Special thanks to all contributors and the security community.
+
+---
+
+## 📞 Support & Community
+
+### Get Help
+
+- **Documentation**: [docs/](./docs/)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/ge0mant1s/soac-framework/issues)
+- **GitHub Discussions**: [Ask questions and share ideas](https://github.com/ge0mant1s/soac-framework/discussions)
+
+### Stay Updated
+
+- ⭐ **Star this repository** to follow updates
+- 👀 **Watch releases** for version notifications
+- 🐦 **Follow us** (coming soon)
+
+### Commercial Support
+
+For enterprise support, custom development, or consulting:
+- Email: support@soacframework.org (coming soon)
+- Website: https://soacframework.org (coming soon)
+
+---
+
+## ⚠️ Important Localhost Notice
+
+**This localhost refers to localhost of the computer that I'm using to run the application, not your local machine. To access it locally or remotely, you'll need to deploy the application on your own system.**
+
+Follow the [deployment instructions](#-deployment-options) to run on your infrastructure.
+
+---
+
+<div align="center">
+
+**Built with ❤️ by the SOaC Framework Team**
+
+[Documentation](./docs/) •
+[Quick Start](#-quick-start) •
+[Deployment](#-deployment-options) •
+[Contributing](./CONTRIBUTING.md) •
+[License](./LICENSE)
+
+Copyright © 2025 SOaC Framework Team. All rights reserved.
+
+</div>
